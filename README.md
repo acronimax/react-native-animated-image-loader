@@ -1,6 +1,27 @@
-# react-native-animated-image-loader
+# React Native Animated Image Loader
 
-update this description
+<p align="center">
+  <em>
+    JavaScript
+    · TypeScript
+    · JSX
+    · JSON
+  </em>
+  <br />
+  <em>
+    <a href="https://prettier.io/docs/en/plugins.html">
+      Your favorite language?
+    </a>
+  </em>
+</p>
+
+<p align="center">
+  <a href="#badge">
+    <img alt="code style: prettier" src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square"></a>
+</p>
+
+## Intro
+A React Native core animated image loader to add a fancy and smooth image loader to enhancement your apps.
 
 ## Installation
 
