@@ -1,22 +1,37 @@
 import React from 'react';
-import { Animated, StyleSheet, View } from 'react-native';
+import {
+  View,
+  Animated,
+  StyleSheet,
+  type ImageStyle,
+  type ViewStyle,
+} from 'react-native';
 import { SCREEN_WIDTH, SCREEN_HEIGHT, DEFAULT_COLOR } from './constants';
-//
-// type AnimatedImgLoaderProps = {
-//   width: number;
-//   height: number;
-// };
 
-const IMG =
-  'https://images.pexels.com/photos/1366919/pexels-photo-1366919.jpeg';
+type AnimatedImgLoaderProps = {
+  width: number;
+  height: number;
+  marginSpace?: number;
+  loaderContainerStyles?: ViewStyle;
+  skeletonStyles?: ViewStyle;
+  animatedImgStyle?: ImageStyle;
+  imageUri: string;
+};
 
-const AnimatedImgLoader: React.FC = () => {
+const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
+  height,
+  width,
+  marginSpace = 40,
+  imageUri,
+  loaderContainerStyles,
+  skeletonStyles,
+}) => {
   const skeletonAV = React.useRef(new Animated.Value(0)).current;
   const imageOpacityAV = React.useRef(new Animated.Value(0)).current;
   const [keepSkeleton, setKeepSkeleton] = React.useState(true);
   const translateSkeleton = skeletonAV.interpolate({
     inputRange: [0, 1],
-    outputRange: [-20, SCREEN_WIDTH - 20],
+    outputRange: [-marginSpace / 2, width - marginSpace / 2],
     extrapolate: 'clamp',
   });
   const imageOpacityStyle = imageOpacityAV.interpolate({
@@ -59,23 +74,29 @@ const AnimatedImgLoader: React.FC = () => {
     setTimeout(() => {
       setKeepSkeleton(!keepSkeleton);
       imageOpacityAnimation();
-    }, 2500);
+    }, 2000);
   };
 
   return (
-    <View style={styles.loaderContainer}>
+    <View
+      style={[
+        loaderContainerStyles ? loaderContainerStyles : styles.loaderContainer,
+      ]}
+    >
       <Animated.View
         style={[
           StyleSheet.absoluteFill,
-          styles.skeleton,
+          skeletonStyles ? skeletonStyles : styles.skeleton,
           { transform: [{ translateX: translateSkeleton }] },
         ]}
       />
       <Animated.Image
-        source={{ uri: IMG }}
-        style={{ opacity: imageOpacityStyle }}
-        width={SCREEN_WIDTH - 40}
-        height={SCREEN_HEIGHT / 3}
+        source={{ uri: imageUri }}
+        style={{
+          opacity: imageOpacityStyle,
+          width: width - marginSpace,
+          height: height / 3,
+        }}
         onLoadEnd={stopSkeleton}
       />
     </View>

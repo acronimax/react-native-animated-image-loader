@@ -39,13 +39,13 @@
     "ios",
     "android"
   ],
-  "repository": "https://github.com/acronimax/",
+  "repository": "https://github.com/acronimax/react-native-animated-image-loader",
   "author": "acronimax <dev@acronimax.io> (https://acronimax.io)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/acronimax//issues"
+    "url": "https://github.com/acronimax/react-native-animated-image-loader/issues"
   },
-  "homepage": "https://github.com/acronimax/#readme",
+  "homepage": "https://github.com/acronimax/react-native-animated-image-loader#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
