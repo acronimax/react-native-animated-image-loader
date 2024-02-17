@@ -8,16 +8,29 @@ import {
 } from 'react-native';
 import { SCREEN_WIDTH, SCREEN_HEIGHT, DEFAULT_COLOR } from './constants';
 
-type AnimatedImgLoaderProps = {
+export type AnimatedImgLoaderProps = {
   width: number;
   height: number;
+  imageUri: string;
   marginSpace?: number;
   loaderContainerStyles?: ViewStyle;
   skeletonStyles?: ViewStyle;
   animatedImgStyle?: ImageStyle;
-  imageUri: string;
 };
 
+/**
+ * A React functional component for loading an animated image.
+ *
+ * @component
+ * @param {object} AnimatedImgLoaderProps - The props for the AnimatedImgLoader component.
+ * @param {number} AnimatedImgLoaderProps.height - The height of the image.
+ * @param {number} AnimatedImgLoaderProps.width - The width of the image.
+ * @param {number} [AnimatedImgLoaderProps.marginSpace=40] - The margin space around the image.
+ * @param {string} AnimatedImgLoaderProps.imageUri - The URI of the image to be loaded.
+ * @param {object} [AnimatedImgLoaderProps.loaderContainerStyles] - Additional styles for the loader container.
+ * @param {object} [AnimatedImgLoaderProps.skeletonStyles] - Additional styles for the skeleton view.
+ * @returns {JSX.Element} The AnimatedImgLoader component.
+ */
 const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
   height,
   width,
@@ -25,20 +38,26 @@ const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
   imageUri,
   loaderContainerStyles,
   skeletonStyles,
-}) => {
-  const skeletonAV = React.useRef(new Animated.Value(0)).current;
-  const imageOpacityAV = React.useRef(new Animated.Value(0)).current;
+}: AnimatedImgLoaderProps): JSX.Element => {
+  const skeletonAV: Animated.Value = React.useRef(
+    new Animated.Value(0)
+  ).current;
+  const imageOpacityAV: Animated.Value = React.useRef(
+    new Animated.Value(0)
+  ).current;
   const [keepSkeleton, setKeepSkeleton] = React.useState(true);
-  const translateSkeleton = skeletonAV.interpolate({
-    inputRange: [0, 1],
-    outputRange: [-marginSpace / 2, width - marginSpace / 2],
-    extrapolate: 'clamp',
-  });
-  const imageOpacityStyle = imageOpacityAV.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 1],
-    extrapolate: 'clamp',
-  });
+  const translateSkeleton: Animated.AnimatedInterpolation<string | number> =
+    skeletonAV.interpolate({
+      inputRange: [0, 1],
+      outputRange: [-marginSpace / 2, width - marginSpace / 2],
+      extrapolate: 'clamp',
+    });
+  const imageOpacityStyle: Animated.AnimatedInterpolation<string | number> =
+    imageOpacityAV.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 1],
+      extrapolate: 'clamp',
+    });
 
   const skeletonAnimation = () =>
     Animated.spring(skeletonAV, {
@@ -46,9 +65,8 @@ const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
       toValue: 1,
       speed: 1,
       bounciness: 100,
-    }).start(({ finished }) => {
+    }).start(({ finished }): void => {
       if (finished && keepSkeleton) {
-        console.log('here finish');
         skeletonAV.setValue(0);
         skeletonAnimation();
       }
@@ -66,15 +84,13 @@ const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
     skeletonAnimation,
   ]);
 
-  React.useEffect(() => {
+  React.useEffect((): void => {
     startSkeletonAnimation();
   }, [startSkeletonAnimation]);
 
-  const stopSkeleton = () => {
-    setTimeout(() => {
-      setKeepSkeleton(!keepSkeleton);
-      imageOpacityAnimation();
-    }, 2000);
+  const stopSkeleton = (): void => {
+    setKeepSkeleton(!keepSkeleton);
+    imageOpacityAnimation();
   };
 
   return (

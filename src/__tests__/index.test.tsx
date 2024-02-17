@@ -1,5 +1,5 @@
 describe('react-native-image-loader', () => {
-  it('should render correcly', () => {
-    // render();
+  it('should render correctly', () => {
+    // expect()
   });
 });

@@ -11,10 +11,10 @@ import {
 import AnimatedImgLoader from 'react-native-animated-image-loader';
 
 const screen = Dimensions.get('screen');
-const IMG_EXAMPLE =
+const IMG_EXAMPLE: string =
   'https://images.pexels.com/photos/1366919/pexels-photo-1366919.jpeg';
 
-export default function App() {
+export default function App(): JSX.Element {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar />

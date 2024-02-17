@@ -8,11 +8,6 @@
     · JSON
   </em>
   <br />
-  <em>
-    <a href="https://prettier.io/docs/en/plugins.html">
-      Your favorite language?
-    </a>
-  </em>
 </p>
 
 <p align="center">
@@ -21,7 +16,7 @@
 </p>
 
 ## Intro
-A React Native core animated image loader to add a fancy and smooth image loader to enhancement your apps.
+A React Native core animated image loader to add a fancy and smooth image loader to enhancement your apps with no third dependency.
 
 ## Installation
 
@@ -32,11 +27,14 @@ npm install react-native-animated-image-loader
 ## Usage
 
 ```js
-import { multiply } from 'react-native-animated-image-loader';
+import AnimatedImgLoader from 'react-native-animated-image-loader';
 
-// ...
-
-const result = await multiply(3, 7);
+...
+<AnimatedImgLoader
+  width={100}
+  height={100}
+  imageUri={'https://images.pexels.com/photos/1366919/pexels-photo-1366919.jpeg'}
+/>
 ```
 
 ## Contributing
