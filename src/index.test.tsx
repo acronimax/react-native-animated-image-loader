@@ -9,7 +9,9 @@ describe('react-native-image-loader', () => {
         animatedImgStyle={{}}
         height={100}
         width={100}
-        imageUri={''}
+        imageUri={
+          'https://images.pexels.com/photos/1366919/pexels-photo-1366919.jpeg'
+        }
       />
     );
     expect(wrapper).toMatchSnapshot();
