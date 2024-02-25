@@ -78,4 +78,5 @@ android/keystores/debug.keystore
 lib/
 
 # Test
-./src/__snapshots__
+src/__snapshots__/*.snap
+/coverage
