@@ -5,7 +5,6 @@ import {
   StatusBar,
   Text,
   View,
-  ActivityIndicator,
   Dimensions,
 } from 'react-native';
 import AnimatedImgLoader from 'react-native-animated-image-loader';
@@ -24,16 +23,12 @@ export default function App(): JSX.Element {
           accessibilityRole={'text'}
           accessibilityLabel={'RN Animated Image Loader'}
         >
-          RN Animated Image Loader
+          Simple Animated Image Loader
         </Text>
-        <ActivityIndicator
-          accessibilityRole={'image'}
-          accessibilityLabel={'spinner icon'}
-        />
       </View>
       <AnimatedImgLoader
         width={screen.width}
-        height={screen.height}
+        height={screen.height / 3}
         imageUri={IMG_EXAMPLE}
       />
     </SafeAreaView>
