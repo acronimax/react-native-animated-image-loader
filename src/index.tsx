@@ -6,7 +6,7 @@ import {
   type ImageStyle,
   type ViewStyle,
 } from 'react-native';
-import { SCREEN_WIDTH, SCREEN_HEIGHT, DEFAULT_COLOR } from './constants';
+import { styles } from './styles';
 
 export type AnimatedImgLoaderProps = {
   width: number;
@@ -111,34 +111,11 @@ const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
         style={{
           opacity: imageOpacityStyle,
           width: width - marginSpace,
-          height: height / 3,
+          height: height,
         }}
         onLoadEnd={stopSkeleton}
       />
     </View>
   );
 };
-const styles = StyleSheet.create({
-  loaderContainer: {
-    borderRadius: 8,
-    width: SCREEN_WIDTH - 40,
-    height: SCREEN_HEIGHT / 3,
-    backgroundColor: DEFAULT_COLOR.SKELETON_BG,
-    overflow: 'hidden',
-  },
-  skeleton: {
-    opacity: 0.2,
-    backgroundColor: DEFAULT_COLOR.SKELETON_LINE,
-    shadowColor: DEFAULT_COLOR.WHITE,
-    shadowOffset: {
-      width: 0,
-      height: 12,
-    },
-    shadowOpacity: 0.58,
-    shadowRadius: 16.0,
-
-    elevation: 24,
-    width: SCREEN_WIDTH * 0.1,
-  },
-});
 export default AnimatedImgLoader;
