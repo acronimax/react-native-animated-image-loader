@@ -2,7 +2,7 @@
 
 This wrapper add a fancy and smooth image loader, using just core components without adding third dependencies.
 
-<div style="display:flex;gap: 10px">
+<div style="display:flex;gap: 10px; margin-bottom: 30px;">
   <img src="https://img.shields.io/badge/prettier-purple?logo=prettier" alt="code style prettier" />
   <img src="https://img.shields.io/badge/eslint-blue?logo=eslint" alt="badge react native"/>
   <img src="https://img.shields.io/badge/react-native-gray?logo=react" alt="badge react native"/>
@@ -10,8 +10,8 @@ This wrapper add a fancy and smooth image loader, using just core components wit
   <img src="https://img.shields.io/badge/testing-library-gray?logo=testing-library" alt="badge jest"/>
 </div>
 
-<div style="display: flex; margin-top: 30px;">
-  <img src="demo-ios.gif" alt="demo ios gif" style="aspect-ratio: 16 / 9" />
+<div style="display: flex;margin-top: 30px;align-items: start">
+  <img src="demo-ios.gif" alt="demo ios gif" style="aspect-ratio: auto" />
   <img src="demo-gms.gif" alt="demo ios gif" style="aspect-ratio: auto" />
 </div>
 
