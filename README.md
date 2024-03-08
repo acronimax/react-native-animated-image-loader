@@ -1,30 +1,17 @@
 # React Native Animated Image Loader
 
-This wrapper add a fancy and smooth image loader, using core components to enhancement your apps without no third dependency.
+This wrapper add a fancy and smooth image loader, using just core components without adding third dependencies.
 
+<img alt="code style: prettier" src="https://img.shields.io/badge/prettier-purple?logo=prettier">
+<img src="https://img.shields.io/badge/eslint-blue?logo=eslint" alt="badge react native"/>
+<img src="https://img.shields.io/badge/react-native-gray?logo=react" alt="badge react native"/>
+<img src="https://img.shields.io/badge/jest-brown?logo=jest" alt="badge jest"/>
+<img src="https://img.shields.io/badge/testing-library-gray?logo=testing-library" alt="badge jest"/>
 
-<div style="text-align: center">
-  <img src="demo-ios.gif" alt="demo ios gif" />
-  <img src="demo-gms.gif" alt="demo ios gif" />
+<div style="display: flex; margin-top: 30px;">
+  <img src="demo-ios.gif" alt="demo ios gif" style="aspect-ratio: auto" />
+  <img src="demo-gms.gif" alt="demo ios gif" style="aspect-ratio: auto" />
 </div>
-
-<p align="center">
-  <a href="https://prettier.io" rel="noopener noreferrer" target="_blank">
-    <img alt="code style: prettier" src="https://img.shields.io/badge/prettier-purple?logo=prettier">
-  </a>
-  <a href="https://eslint.org" rel="noopener noreferrer" target="_blank">
-    <img src="https://img.shields.io/badge/eslint-blue?logo=eslint" alt="badge react native"/>
-  </a>
-  <a href="https://reactnative.dev" rel="noopener noreferrer" target="_blank">
-    <img src="https://img.shields.io/badge/react-native-gray?logo=react" alt="badge react native"/>
-  </a>
-  <a href="https://jestjs.io" rel="noopener noreferrer" target="_blank">
-    <img src="https://img.shields.io/badge/jest-brown?logo=jest" alt="badge jest"/>
-  </a>
-  <a href="https://testing-library.com/docs/react-native-testing-library/intro" rel="noopener noreferrer" target="_blank">
-    <img src="https://img.shields.io/badge/testing-library-gray?logo=testing-library" alt="badge jest"/>
-  </a>
-</p>
 
 ## Installation
 
