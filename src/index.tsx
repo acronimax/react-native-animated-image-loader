@@ -9,8 +9,6 @@ import {
 import { styles } from './styles';
 
 export type AnimatedImgLoaderProps = {
-  width: number;
-  height: number;
   imageUri: string;
   marginSpace?: number;
   loaderContainerStyles?: ViewStyle;
@@ -32,8 +30,6 @@ export type AnimatedImgLoaderProps = {
  * @returns {JSX.Element} The AnimatedImgLoader component.
  */
 const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
-  height,
-  width,
   marginSpace = 40,
   imageUri,
   loaderContainerStyles,
@@ -49,7 +45,7 @@ const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
   const translateSkeleton: Animated.AnimatedInterpolation<string | number> =
     skeletonAV.interpolate({
       inputRange: [0, 1],
-      outputRange: [-marginSpace / 2, width - marginSpace / 2],
+      outputRange: [-marginSpace / 2, marginSpace / 2],
       extrapolate: 'clamp',
     });
   const imageOpacityStyle: Animated.AnimatedInterpolation<string | number> =
@@ -65,9 +61,8 @@ const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
       toValue: 1,
       speed: 1,
       bounciness: 100,
-    }).start(({ finished }): void => {
-      if (finished && keepSkeleton) {
-        skeletonAV.setValue(0);
+    }).start((result: Animated.EndResult): void => {
+      if (result.finished && keepSkeleton) {
         skeletonAnimation();
       }
     });
@@ -108,11 +103,12 @@ const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
       />
       <Animated.Image
         source={{ uri: imageUri }}
-        style={{
-          opacity: imageOpacityStyle,
-          width: width - marginSpace,
-          height: height,
-        }}
+        style={[
+          styles.img,
+          {
+            opacity: imageOpacityStyle,
+          },
+        ]}
         onLoadEnd={stopSkeleton}
       />
     </View>

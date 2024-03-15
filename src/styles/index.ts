@@ -9,9 +9,12 @@ export const styles = StyleSheet.create({
     backgroundColor: DEFAULT_COLOR.SKELETON_BG,
     overflow: 'hidden',
   },
+  img: {
+    height: '100%',
+    width: '100%',
+  },
   skeleton: {
-    opacity: 0.2,
-    backgroundColor: DEFAULT_COLOR.SKELETON_LINE,
+    backgroundColor: DEFAULT_COLOR.SKELETON_BG,
     shadowColor: DEFAULT_COLOR.WHITE,
     shadowOffset: {
       width: 0,
@@ -19,8 +22,6 @@ export const styles = StyleSheet.create({
     },
     shadowOpacity: 0.58,
     shadowRadius: 16.0,
-
     elevation: 24,
-    width: SCREEN_WIDTH * 0.1,
   },
 });
