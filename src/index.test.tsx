@@ -6,9 +6,6 @@ describe('react-native-image-loader', () => {
   it('should render correctly', () => {
     const wrapper = render(
       <AnimatedImgLoader
-        animatedImgStyle={{}}
-        height={100}
-        width={100}
         imageUri={
           'https://images.pexels.com/photos/1366919/pexels-photo-1366919.jpeg'
         }

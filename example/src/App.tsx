@@ -26,11 +26,7 @@ export default function App(): JSX.Element {
           Simple Animated Image Loader
         </Text>
       </View>
-      <AnimatedImgLoader
-        width={screen.width}
-        height={screen.height / 3}
-        imageUri={IMG_EXAMPLE}
-      />
+      <AnimatedImgLoader imageUri={IMG_EXAMPLE} />
     </SafeAreaView>
   );
 }
