@@ -21,8 +21,6 @@ export type AnimatedImgLoaderProps = {
  *
  * @component
  * @param {object} AnimatedImgLoaderProps - The props for the AnimatedImgLoader component.
- * @param {number} AnimatedImgLoaderProps.height - The height of the image.
- * @param {number} AnimatedImgLoaderProps.width - The width of the image.
  * @param {number} [AnimatedImgLoaderProps.marginSpace=40] - The margin space around the image.
  * @param {string} AnimatedImgLoaderProps.imageUri - The URI of the image to be loaded.
  * @param {object} [AnimatedImgLoaderProps.loaderContainerStyles] - Additional styles for the loader container.
