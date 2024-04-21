@@ -135,12 +135,14 @@
           "trailingComma": "es5",
           "useTabs": false
         }
-      ]
+      ],
+      "react/react-in-jsx-scope": 0
     }
   },
   "eslintIgnore": [
     "node_modules/",
-    "lib/"
+    "lib/",
+    "coverage"
   ],
   "prettier": {
     "quoteProps": "consistent",

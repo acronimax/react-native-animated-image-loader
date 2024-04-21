@@ -1,19 +1,11 @@
 import * as React from 'react';
-import {
-  StyleSheet,
-  SafeAreaView,
-  StatusBar,
-  Text,
-  View,
-  Dimensions,
-} from 'react-native';
+import { StyleSheet, SafeAreaView, StatusBar, Text, View } from 'react-native';
 import AnimatedImgLoader from 'react-native-animated-image-loader';
 
-const screen = Dimensions.get('screen');
 const IMG_EXAMPLE: string =
   'https://images.pexels.com/photos/1366919/pexels-photo-1366919.jpeg';
 
-export default function App(): JSX.Element {
+export default function App(): React.ReactElement {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar />
@@ -23,7 +15,7 @@ export default function App(): JSX.Element {
           accessibilityRole={'text'}
           accessibilityLabel={'RN Animated Image Loader'}
         >
-          Simple Animated Image Loader
+          Animated Image Loader
         </Text>
       </View>
       <AnimatedImgLoader imageUri={IMG_EXAMPLE} />
@@ -42,7 +34,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     alignItems: 'center',
     justifyContent: 'space-evenly',
-    width: screen.width - 40,
+    width: '90%',
   },
   title: {
     fontSize: 20,

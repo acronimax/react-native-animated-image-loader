@@ -3,63 +3,71 @@ import {
   View,
   Animated,
   StyleSheet,
-  type ImageStyle,
   type ViewStyle,
+  Easing,
 } from 'react-native';
 import { styles } from './styles';
+import { DEFAULT_COLOR, SCREEN_WIDTH } from './constants';
 
 export type AnimatedImgLoaderProps = {
   imageUri: string;
-  marginSpace?: number;
   loaderContainerStyles?: ViewStyle;
   skeletonStyles?: ViewStyle;
-  animatedImgStyle?: ImageStyle;
+  skeletonColor?: string;
 };
 
 /**
  * A React functional component for loading an animated image.
  *
  * @component
- * @param {object} AnimatedImgLoaderProps - The props for the AnimatedImgLoader component.
- * @param {number} [AnimatedImgLoaderProps.marginSpace=40] - The margin space around the image.
  * @param {string} AnimatedImgLoaderProps.imageUri - The URI of the image to be loaded.
- * @param {object} [AnimatedImgLoaderProps.loaderContainerStyles] - Additional styles for the loader container.
+ * @param {object} AnimatedImgLoaderProps.loaderContainerStyles - Additional styles for the loader container.
  * @param {object} [AnimatedImgLoaderProps.skeletonStyles] - Additional styles for the skeleton view.
- * @returns {JSX.Element} The AnimatedImgLoader component.
+ * @param {string} [AnimatedImgLoaderProps.skeletonColor] - The color for the skeleton background.
+ * @returns {React.Element} The AnimatedImgLoader component.
  */
 const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
-  marginSpace = 40,
   imageUri,
   loaderContainerStyles,
   skeletonStyles,
-}: AnimatedImgLoaderProps): JSX.Element => {
-  const skeletonAV: Animated.Value = React.useRef(
-    new Animated.Value(0)
-  ).current;
+  skeletonColor = DEFAULT_COLOR.SKELETON_BG,
+}: AnimatedImgLoaderProps): React.ReactElement => {
   const imageOpacityAV: Animated.Value = React.useRef(
     new Animated.Value(0)
   ).current;
+  const avSkeletonIndicator: Animated.Value = React.useRef(
+    new Animated.Value(0)
+  ).current;
   const [keepSkeleton, setKeepSkeleton] = React.useState(true);
-  const translateSkeleton: Animated.AnimatedInterpolation<string | number> =
-    skeletonAV.interpolate({
-      inputRange: [0, 1],
-      outputRange: [-marginSpace / 2, marginSpace / 2],
-      extrapolate: 'clamp',
-    });
+  const keepSkeletonRef = React.useRef(true);
   const imageOpacityStyle: Animated.AnimatedInterpolation<string | number> =
     imageOpacityAV.interpolate({
       inputRange: [0, 1],
       outputRange: [0, 1],
       extrapolate: 'clamp',
     });
+  const skeletonIndicatorStyle: Animated.AnimatedInterpolation<number> =
+    avSkeletonIndicator.interpolate({
+      inputRange: [0, 1],
+      outputRange: [-SCREEN_WIDTH / 2, SCREEN_WIDTH / 2],
+      extrapolate: 'clamp',
+    });
 
   const skeletonAnimation = () =>
-    Animated.spring(skeletonAV, {
-      useNativeDriver: true,
-      toValue: 1,
-      speed: 1,
-      bounciness: 100,
-    }).start((result: Animated.EndResult): void => {
+    Animated.sequence([
+      Animated.timing(avSkeletonIndicator, {
+        toValue: 0,
+        duration: 2500,
+        easing: Easing.out(Easing.ease),
+        useNativeDriver: true,
+      }),
+      Animated.timing(avSkeletonIndicator, {
+        toValue: 1,
+        duration: 2000,
+        easing: Easing.in(Easing.ease),
+        useNativeDriver: true,
+      }),
+    ]).start((result: Animated.EndResult) => {
       if (result.finished && keepSkeleton) {
         skeletonAnimation();
       }
@@ -83,6 +91,7 @@ const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
 
   const stopSkeleton = (): void => {
     setKeepSkeleton(!keepSkeleton);
+    keepSkeletonRef.current = false;
     imageOpacityAnimation();
   };
 
@@ -95,10 +104,19 @@ const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
       <Animated.View
         style={[
           StyleSheet.absoluteFill,
-          skeletonStyles ? skeletonStyles : styles.skeleton,
-          { transform: [{ translateX: translateSkeleton }] },
+          skeletonStyles ? skeletonStyles : styles.skeletonContainer,
+          { backgroundColor: skeletonColor },
         ]}
-      />
+      >
+        <Animated.View
+          style={[
+            styles.skeletonIndicator,
+            {
+              transform: [{ translateX: skeletonIndicatorStyle }],
+            },
+          ]}
+        />
+      </Animated.View>
       <Animated.Image
         source={{ uri: imageUri }}
         style={[
