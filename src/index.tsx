@@ -3,31 +3,27 @@ import {
   View,
   Animated,
   StyleSheet,
-  type ImageStyle,
   type ViewStyle,
-  ActivityIndicator,
-  type ActivityIndicatorProps,
+  Easing,
 } from 'react-native';
 import { styles } from './styles';
-import { DEFAULT_COLOR } from './constants';
+import { DEFAULT_COLOR, SCREEN_WIDTH } from './constants';
 
 export type AnimatedImgLoaderProps = {
   imageUri: string;
   loaderContainerStyles?: ViewStyle;
   skeletonStyles?: ViewStyle;
   skeletonColor?: string;
-  activityIndicatorProps?: ActivityIndicatorProps;
-  animatedImgStyle?: ImageStyle;
 };
 
 /**
  * A React functional component for loading an animated image.
  *
  * @component
- * @param {object} AnimatedImgLoaderProps - The props for the AnimatedImgLoader component.
  * @param {string} AnimatedImgLoaderProps.imageUri - The URI of the image to be loaded.
- * @param {object} [AnimatedImgLoaderProps.loaderContainerStyles] - Additional styles for the loader container.
+ * @param {object} AnimatedImgLoaderProps.loaderContainerStyles - Additional styles for the loader container.
  * @param {object} [AnimatedImgLoaderProps.skeletonStyles] - Additional styles for the skeleton view.
+ * @param {string} [AnimatedImgLoaderProps.skeletonColor] - The color for the skeleton background.
  * @returns {React.Element} The AnimatedImgLoader component.
  */
 const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
@@ -35,12 +31,11 @@ const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
   loaderContainerStyles,
   skeletonStyles,
   skeletonColor = DEFAULT_COLOR.SKELETON_BG,
-  activityIndicatorProps = { color: DEFAULT_COLOR.BLACK, size: 'small' },
 }: AnimatedImgLoaderProps): React.ReactElement => {
-  const skeletonOpacityAV: Animated.Value = React.useRef(
-    new Animated.Value(0.3)
-  ).current;
   const imageOpacityAV: Animated.Value = React.useRef(
+    new Animated.Value(0)
+  ).current;
+  const avSkeletonIndicator: Animated.Value = React.useRef(
     new Animated.Value(0)
   ).current;
   const [keepSkeleton, setKeepSkeleton] = React.useState(true);
@@ -51,17 +46,25 @@ const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
       outputRange: [0, 1],
       extrapolate: 'clamp',
     });
+  const skeletonIndicatorStyle: Animated.AnimatedInterpolation<number> =
+    avSkeletonIndicator.interpolate({
+      inputRange: [0, 1],
+      outputRange: [-SCREEN_WIDTH / 2, SCREEN_WIDTH / 2],
+      extrapolate: 'clamp',
+    });
 
   const skeletonAnimation = () =>
     Animated.sequence([
-      Animated.timing(skeletonOpacityAV, {
-        toValue: 0.7,
-        duration: 800,
+      Animated.timing(avSkeletonIndicator, {
+        toValue: 0,
+        duration: 2500,
+        easing: Easing.out(Easing.ease),
         useNativeDriver: true,
       }),
-      Animated.timing(skeletonOpacityAV, {
-        toValue: 0.3,
-        duration: 800,
+      Animated.timing(avSkeletonIndicator, {
+        toValue: 1,
+        duration: 2000,
+        easing: Easing.in(Easing.ease),
         useNativeDriver: true,
       }),
     ]).start((result: Animated.EndResult) => {
@@ -102,10 +105,17 @@ const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
         style={[
           StyleSheet.absoluteFill,
           skeletonStyles ? skeletonStyles : styles.skeletonContainer,
-          { backgroundColor: skeletonColor, opacity: skeletonOpacityAV },
+          { backgroundColor: skeletonColor },
         ]}
       >
-        <ActivityIndicator {...activityIndicatorProps} />
+        <Animated.View
+          style={[
+            styles.skeletonIndicator,
+            {
+              transform: [{ translateX: skeletonIndicatorStyle }],
+            },
+          ]}
+        />
       </Animated.View>
       <Animated.Image
         source={{ uri: imageUri }}

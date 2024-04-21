@@ -1,49 +1,59 @@
 # React Native Animated Image Loader
 
-This wrapper add a fancy and smooth image loader, using core components to enhancement your apps without no third dependency.
+[![npm version](https://img.shields.io/npm/v/react-native-animated-image-loader.svg?style=for-the-badge)](https://www.npmjs.com/package/react-native-animated-image-loader)
+[![npm](https://img.shields.io/npm/dt/react-native-animated-image-loader.svg?style=for-the-badge)](https://www.npmjs.com/package/react-native-animated-image-loader)
+![Platform - Android and iOS](https://img.shields.io/badge/platform-Android%20%7C%20iOS-blue.svg?style=for-the-badge)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+[![format prettier](https://img.shields.io/badge/format-prettier-ff69b4.svg?style=for-the-badge)](https://prettier.io)
+[![lint-eslint](https://img.shields.io/badge/lint-eslint-4b32c3.svg?style=for-the-badge)](https://eslint.org/)
 
-
-<div style="text-align: center">
-  <img src="demo-ios.gif" alt="demo ios gif" />
-  <img src="demo-gms.gif" alt="demo ios gif" />
-</div>
-
-<p align="center">
-  <a href="https://prettier.io" rel="noopener noreferrer" target="_blank">
-    <img alt="code style: prettier" src="https://img.shields.io/badge/prettier-purple?logo=prettier">
-  </a>
-  <a href="https://eslint.org" rel="noopener noreferrer" target="_blank">
-    <img src="https://img.shields.io/badge/eslint-blue?logo=eslint" alt="badge react native"/>
-  </a>
-  <a href="https://reactnative.dev" rel="noopener noreferrer" target="_blank">
-    <img src="https://img.shields.io/badge/react-native-gray?logo=react" alt="badge react native"/>
-  </a>
-  <a href="https://jestjs.io" rel="noopener noreferrer" target="_blank">
-    <img src="https://img.shields.io/badge/jest-brown?logo=jest" alt="badge jest"/>
-  </a>
-  <a href="https://testing-library.com/docs/react-native-testing-library/intro" rel="noopener noreferrer" target="_blank">
-    <img src="https://img.shields.io/badge/testing-library-gray?logo=testing-library" alt="badge jest"/>
-  </a>
-</p>
+<table>
+  <tr>
+    <td align="center">
+      <img alt="React Native Bouncy Checkbox"
+        src="demo-ios.gif" />
+    </td>
+    <td align="center">
+      <img alt="React Native Bouncy Checkbox"
+        src="demo-gms.gif" />
+    </td>
+   </tr>
+</table>
 
 ## Installation
 
+Add the dependency: 🤔
+
+<b>Zero Dependency</b> 🥳
+
+### React Native
 ```sh
 npm install react-native-animated-image-loader
 ```
+```sh
+yarn add react-native-animated-image-loader
+```
 
-## Usage
-
+### Import
 ```js
 import AnimatedImgLoader from 'react-native-animated-image-loader';
-
-...
-<AnimatedImgLoader
-  width={100}
-  height={100}
-  imageUri={'https://images.pexels.com/photos/1366919/pexels-photo-1366919.jpeg'}
-/>
 ```
+
+## Basic Usage
+
+```js
+<AnimatedImgLoader imageUri={'url-to-your-image'} />
+```
+
+### Configuration - Props
+
+| Property               |          Type          |                                                     Default                                                      | Description                                                             |
+|------------------------|:----------------------:|:----------------------------------------------------------------------------------------------------------------:|-------------------------------------------------------------------------|
+| **imageUri**           |       **string**       |                                                  **undefined**                                                   | **Required: the url of the image you want to load**                     |
+| loaderContainerStyles  |       ViewStyle        |                        { borderRadius: 8,width: '90%', height: 250, overflow: 'hidden', }                        | set your own styles for the loader container wrapper                    |
+| skeletonStyles         |       ViewStyle        |                                { alignItems: 'center', justifyContent: 'center' }                                | set your own styles for the skeleton component                          |
+| skeletonColor          |         string         |                                                 "rgba(0,0,0,.2)"                                                 | set skeleton background color                                           |
+
 
 ## Contributing
 

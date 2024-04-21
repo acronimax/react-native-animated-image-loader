@@ -15,7 +15,7 @@ export default function App(): React.ReactElement {
           accessibilityRole={'text'}
           accessibilityLabel={'RN Animated Image Loader'}
         >
-          Simple Animated Image Loader
+          Animated Image Loader
         </Text>
       </View>
       <AnimatedImgLoader imageUri={IMG_EXAMPLE} />
