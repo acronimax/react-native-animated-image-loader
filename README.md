@@ -1,4 +1,4 @@
-# React Native Animated Image Loader
+<h1><img src="animated-image-loader-logo.png" alt="animated image loader"></h1>
 
 [![npm version](https://img.shields.io/npm/v/react-native-animated-image-loader.svg?style=for-the-badge)](https://www.npmjs.com/package/react-native-animated-image-loader)
 [![npm](https://img.shields.io/npm/dt/react-native-animated-image-loader.svg?style=for-the-badge)](https://www.npmjs.com/package/react-native-animated-image-loader)
@@ -47,12 +47,12 @@ import AnimatedImgLoader from 'react-native-animated-image-loader';
 
 ### Configuration - Props
 
-| Property               |          Type          |                                                     Default                                                      | Description                                                             |
-|------------------------|:----------------------:|:----------------------------------------------------------------------------------------------------------------:|-------------------------------------------------------------------------|
-| **imageUri**           |       **string**       |                                                  **undefined**                                                   | **Required: the url of the image you want to load**                     |
-| loaderContainerStyles  |       ViewStyle        |                        { borderRadius: 8,width: '90%', height: 250, overflow: 'hidden', }                        | set your own styles for the loader container wrapper                    |
-| skeletonStyles         |       ViewStyle        |                                { alignItems: 'center', justifyContent: 'center' }                                | set your own styles for the skeleton component                          |
-| skeletonColor          |         string         |                                                 "rgba(0,0,0,.2)"                                                 | set skeleton background color                                           |
+| Property              |    Type    |                              Default                               | Description                                          |
+|-----------------------|:----------:|:------------------------------------------------------------------:|------------------------------------------------------|
+| **imageUri**          | **string** |                           **undefined**                            | **Required: the url of the image you want to load**  |
+| loaderContainerStyles | ViewStyle  | { borderRadius: 8,width: '90%', height: 250, overflow: 'hidden', } | set your own styles for the loader container wrapper |
+| skeletonStyles        | ViewStyle  |         { alignItems: 'center', justifyContent: 'center' }         | set your own styles for the skeleton component       |
+| skeletonColor         |   string   |                          "rgba(0,0,0,.2)"                          | set skeleton background color                        |
 
 
 ## Contributing
