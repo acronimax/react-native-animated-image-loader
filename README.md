@@ -1,4 +1,4 @@
-<h1><img src="animated-image-loader-logo.png" alt="animated image loader"></h1>
+<h1><img src="logo.png" alt="animated image loader"></h1>
 
 [![npm version](https://img.shields.io/npm/v/react-native-animated-image-loader.svg?style=for-the-badge)](https://www.npmjs.com/package/react-native-animated-image-loader)
 [![npm](https://img.shields.io/npm/dt/react-native-animated-image-loader.svg?style=for-the-badge)](https://www.npmjs.com/package/react-native-animated-image-loader)
