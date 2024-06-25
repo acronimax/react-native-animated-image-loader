@@ -6,4 +6,3 @@ export const DEFAULT_COLOR = {
   BLACK: '#000',
 } as const;
 export const SCREEN_WIDTH: number = Dimensions.get('screen').width;
-export const SCREEN_HEIGHT: number = Dimensions.get('screen').height;

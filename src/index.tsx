@@ -26,7 +26,7 @@ export type AnimatedImgLoaderProps = {
  * @param {string} [AnimatedImgLoaderProps.skeletonColor] - The color for the skeleton background.
  * @returns {React.Element} The AnimatedImgLoader component.
  */
-const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
+const AnimatedImgLoader = ({
   imageUri,
   loaderContainerStyles,
   skeletonStyles,
@@ -46,6 +46,7 @@ const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
       outputRange: [0, 1],
       extrapolate: 'clamp',
     });
+
   const skeletonIndicatorStyle: Animated.AnimatedInterpolation<number> =
     avSkeletonIndicator.interpolate({
       inputRange: [0, 1],
@@ -109,6 +110,7 @@ const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
         ]}
       >
         <Animated.View
+          accessibilityRole={'summary'}
           style={[
             styles.skeletonIndicator,
             {
@@ -118,6 +120,7 @@ const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
         />
       </Animated.View>
       <Animated.Image
+        accessibilityRole={'image'}
         source={{ uri: imageUri }}
         style={[
           styles.img,

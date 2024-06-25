@@ -1,9 +1,10 @@
 import React from 'react';
 import { render } from '@testing-library/react-native';
 import AnimatedImgLoader from './index';
+import { describe, expect, test } from '@jest/globals';
 
 describe('react-native-image-loader', () => {
-  it('should render correctly', () => {
+  test('should render correctly', () => {
     const wrapper = render(
       <AnimatedImgLoader
         imageUri={
