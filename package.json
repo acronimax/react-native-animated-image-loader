@@ -39,7 +39,10 @@
     "ios",
     "android"
   ],
-  "repository": "https://github.com/acronimax/react-native-animated-image-loader",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/acronimax/react-native-animated-image-loader.git"
+  },
   "author": "acronimax <dev@acronimax.io> (https://acronimax.io)",
   "license": "MIT",
   "bugs": {
