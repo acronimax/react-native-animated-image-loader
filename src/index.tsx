@@ -20,16 +20,16 @@ export type AnimatedImgLoaderProps = {
  * A React functional component for loading an animated image.
  *
  * @component
- * @param {string} AnimatedImgLoaderProps.imageUri - The URI of the image to be loaded.
- * @param {object} AnimatedImgLoaderProps.loaderContainerStyles - Additional styles for the loader container.
- * @param {object} [AnimatedImgLoaderProps.skeletonStyles] - Additional styles for the skeleton view.
- * @param {string} [AnimatedImgLoaderProps.skeletonColor] - The color for the skeleton background.
+ * @param {string} imageUri - The URI of the image to be loaded.
+ * @param {object} loaderContainerStyles - Additional styles for the loader container.
+ * @param {object} skeletonStyles - Additional styles for the skeleton view.
+ * @param {string} skeletonColor - The color for the skeleton background.
  * @returns {React.Element} The AnimatedImgLoader component.
  */
 const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
   imageUri,
-  loaderContainerStyles,
-  skeletonStyles,
+  loaderContainerStyles = styles.loaderContainer,
+  skeletonStyles = styles.skeletonContainer,
   skeletonColor = DEFAULT_COLOR.SKELETON_BG,
 }: AnimatedImgLoaderProps): React.ReactElement => {
   const imageOpacityAV: Animated.Value = React.useRef(
@@ -85,26 +85,22 @@ const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
     skeletonAnimation,
   ]);
 
-  React.useEffect((): void => {
+  React.useEffect(() => {
     startSkeletonAnimation();
   }, [startSkeletonAnimation]);
 
-  const stopSkeleton = (): void => {
-    setKeepSkeleton(!keepSkeleton);
+  const stopSkeleton = () => {
     keepSkeletonRef.current = false;
+    setKeepSkeleton(false);
     imageOpacityAnimation();
   };
 
   return (
-    <View
-      style={[
-        loaderContainerStyles ? loaderContainerStyles : styles.loaderContainer,
-      ]}
-    >
+    <View style={loaderContainerStyles}>
       <Animated.View
         style={[
           StyleSheet.absoluteFill,
-          skeletonStyles ? skeletonStyles : styles.skeletonContainer,
+          skeletonStyles,
           { backgroundColor: skeletonColor },
         ]}
       >

@@ -2,10 +2,7 @@ import * as React from 'react';
 import { StyleSheet, SafeAreaView, StatusBar, Text, View } from 'react-native';
 import AnimatedImgLoader from 'react-native-animated-image-loader';
 
-const IMG_EXAMPLE: string =
-  'https://images.pexels.com/photos/1366919/pexels-photo-1366919.jpeg';
-
-export default function App(): React.ReactElement {
+export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar />
@@ -18,7 +15,11 @@ export default function App(): React.ReactElement {
           Animated Image Loader
         </Text>
       </View>
-      <AnimatedImgLoader imageUri={IMG_EXAMPLE} />
+      <AnimatedImgLoader
+        imageUri={
+          'https://images.pexels.com/photos/1366919/pexels-photo-1366919.jpeg'
+        }
+      />
     </SafeAreaView>
   );
 }
