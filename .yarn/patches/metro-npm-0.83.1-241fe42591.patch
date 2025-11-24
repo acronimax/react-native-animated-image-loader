@@ -1,0 +1,29 @@
+diff --git a/package.json b/package.json
+index 7d25240845d6a8dc0d5c6867401ee6d28ff98065..a5d25ebe88c322ccd214270f31e212a16f58f71b 100644
+--- a/package.json
++++ b/package.json
+@@ -4,11 +4,6 @@
+   "description": "🚇 The JavaScript bundler for React Native.",
+   "main": "src/index.js",
+   "bin": "src/cli.js",
+-  "exports": {
+-    ".": "./src/index.js",
+-    "./package.json": "./package.json",
+-    "./private/*": "./src/*.js"
+-  },
+   "repository": {
+     "type": "git",
+     "url": "git@github.com:facebook/metro.git"
+diff --git a/src/lib/getPrependedScripts.js b/src/lib/getPrependedScripts.js
+index 152d36b958a161c8ddd62f62123b7a8f32b96bdd..1045a6709a98d2b23b607a815fffabcaea27cc92 100644
+--- a/src/lib/getPrependedScripts.js
++++ b/src/lib/getPrependedScripts.js
+@@ -7,7 +7,7 @@ function _interopRequireDefault(e) {
+ const countLines = require("./countLines");
+ const getPreludeCode = require("./getPreludeCode");
+ const transformHelpers = require("./transformHelpers");
+-const defaults = require("metro-config/private/defaults/defaults");
++const defaults = require("metro-config/src/defaults/defaults");
+ async function getPrependedScripts(
+   config,
+   options,

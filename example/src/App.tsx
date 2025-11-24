@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { StyleSheet, SafeAreaView, StatusBar, Text, View } from 'react-native';
+import { StyleSheet, StatusBar, Text, View } from 'react-native';
 import AnimatedImgLoader from 'react-native-animated-image-loader';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function App() {
   return (

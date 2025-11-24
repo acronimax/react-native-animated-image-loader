@@ -1,0 +1,16 @@
+diff --git a/package.json b/package.json
+index 142b7787e069f6bc5ae1c0bbb81b60c973a9020e..bc9ed57636b4f578c01680e99928a002e5377b62 100644
+--- a/package.json
++++ b/package.json
+@@ -3,11 +3,6 @@
+   "version": "0.83.1",
+   "description": "🚇 Transform worker for Metro.",
+   "main": "src/index.js",
+-  "exports": {
+-    ".": "./src/index.js",
+-    "./package.json": "./package.json",
+-    "./private/*": "./src/*.js"
+-  },
+   "repository": {
+     "type": "git",
+     "url": "git@github.com:facebook/metro.git"

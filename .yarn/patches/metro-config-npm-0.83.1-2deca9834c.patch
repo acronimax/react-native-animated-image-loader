@@ -1,0 +1,16 @@
+diff --git a/package.json b/package.json
+index 14b6e369f182a3558c4e2386a458240b88e3e242..cbb006dc439e47f559ad86e9f72098570cd48a5c 100644
+--- a/package.json
++++ b/package.json
+@@ -3,11 +3,6 @@
+   "version": "0.83.1",
+   "description": "🚇 Config parser for Metro.",
+   "main": "src/index.js",
+-  "exports": {
+-    ".": "./src/index.js",
+-    "./package.json": "./package.json",
+-    "./private/*": "./src/*.js"
+-  },
+   "repository": {
+     "type": "git",
+     "url": "git@github.com:facebook/metro.git"
