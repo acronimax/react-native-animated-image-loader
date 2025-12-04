@@ -115,6 +115,7 @@ const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
       </Animated.View>
       <Animated.Image
         source={{ uri: imageUri }}
+        role={'img'}
         style={[
           styles.img,
           {
