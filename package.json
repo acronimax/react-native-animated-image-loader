@@ -73,6 +73,7 @@
     "@types/react-native-web": "^0",
     "@types/react-test-renderer": "^19.1.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/coverage-v8": "4.0.13",
     "babel-plugin-react-native-web": "^0.21.2",
     "commitlint": "^19.6.0",
     "del-cli": "^6.0.0",
