@@ -6,7 +6,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'happy-dom',
-    setupFiles: './vitest.setup.ts',
+    setupFiles: './vitest.setup.js',
     exclude: ['**/node_modules/**', '**/lib/**', '**/example/**', '**/*.d.ts'],
     coverage: {
       provider: 'v8',
@@ -18,7 +18,7 @@ export default defineConfig({
         '**/__tests__/**',
         '**/*.test.{ts,tsx,js,jsx}',
         '**/vitest.config.ts',
-        '**/vitest.setup.ts',
+        '**/vitest.setup.js',
       ],
     },
   },
