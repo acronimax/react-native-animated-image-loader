@@ -1,6 +1,6 @@
 {
   "name": "react-native-animated-image-loader",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "Simple Elegant Animated Image Loader",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
