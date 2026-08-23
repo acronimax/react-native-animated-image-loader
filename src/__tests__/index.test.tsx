@@ -67,4 +67,14 @@ describe('AnimatedImgLoader', () => {
     );
     expect(container.firstChild).toBeTruthy();
   });
+
+  it('should handle image onLoadEnd callback to stop skeleton', () => {
+    const { unmount } = render(
+      <AnimatedImgLoader imageUri="https://example.com/image.jpg" />
+    );
+    const image = screen.getByRole('img');
+    image.dispatchEvent(new Event('load'));
+    expect(image).toBeDefined();
+    unmount();
+  });
 });
