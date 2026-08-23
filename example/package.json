@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start",
+    "start": "expo start --go",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web"
@@ -14,7 +14,7 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-native": "0.81.5",
-    "react-native-safe-area-context": "^5.6.2",
+    "react-native-safe-area-context": "~5.6.0",
     "react-native-web": "^0.21.0"
   },
   "devDependencies": {
@@ -22,7 +22,8 @@
     "@expo/webpack-config": "~19.0.1",
     "babel-loader": "^9.2.1",
     "babel-plugin-module-resolver": "^5.0.2",
-    "patch-package": "^8.0.0"
+    "patch-package": "^8.0.0",
+    "webpack": "^5.98.0"
   },
   "private": true
 }
