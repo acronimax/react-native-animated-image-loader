@@ -105,6 +105,11 @@
     "react": ">=19.0.0",
     "react-native": ">=0.81.0"
   },
+  "codegenConfig": {
+    "name": "AnimatedImageLoaderSpec",
+    "type": "modules",
+    "jsSrcsDir": "src/specs"
+  },
   "workspaces": [
     "example"
   ],
