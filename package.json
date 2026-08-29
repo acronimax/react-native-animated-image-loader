@@ -107,7 +107,7 @@
   },
   "codegenConfig": {
     "name": "AnimatedImageLoaderSpec",
-    "type": "modules",
+    "type": "all",
     "jsSrcsDir": "src/specs"
   },
   "workspaces": [
