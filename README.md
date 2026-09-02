@@ -59,6 +59,34 @@ import AnimatedImgLoader from 'react-native-animated-image-loader';
 
 See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
 
+### Running the example app with the New Architecture
+
+The library is being rewritten as a C++ JSI TurboModule + Fabric component (see the native rewrite tracking issue). `example/` is a managed Expo app that gets its native `ios/`/`android/` projects via `expo prebuild`, with New Architecture enabled by default (Expo SDK 54 / React Native 0.81+ ship with New Architecture on unconditionally).
+
+**Prerequisites**
+- Xcode + CocoaPods, for iOS
+- Android Studio (SDK + NDK) and a JDK Gradle supports (JDK 17 is known-good; Gradle does not yet support the very latest JDKs bundled with newer Android Studio releases)
+
+**iOS**
+```sh
+cd example
+yarn install
+npx expo prebuild --platform ios
+cd ios && pod install && cd ..
+yarn ios
+```
+
+**Android**
+```sh
+cd example
+yarn install
+npx expo prebuild --platform android
+cd android && ./gradlew :app:assembleDebug && cd ..
+yarn android
+```
+
+Both platforms build and run with New Architecture (Fabric) enabled, and the no-op TurboModule (`AnimatedImageLoader`) and Fabric component (`AnimatedImageLoaderView`) scaffolded so far are reachable from JS without crashing.
+
 ## License
 
 MIT
