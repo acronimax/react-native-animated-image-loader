@@ -11,24 +11,33 @@ export default function App() {
   const [nativeCheck, setNativeCheck] = React.useState('checking…');
 
   React.useEffect(() => {
+    const decodedByteCount = (pixels: string) =>
+      pixels ? Math.floor((pixels.replace(/[=]+$/, '').length * 3) / 4) : 0;
+
     Promise.all([
-      // A real Blurhash test vector (#53) — decoding it into a non-empty
-      // pixel buffer of the expected size proves the shared cpp/ decoder is
-      // reachable end-to-end, not just returning a hardcoded stub.
+      // Real Blurhash (#53) and ThumbHash (#54) test vectors — decoding both
+      // into non-empty pixel buffers of the expected size proves the shared
+      // cpp/ decoder is reachable end-to-end for each format, not just
+      // returning a hardcoded stub.
       NativeAnimatedImageLoader.decodePlaceholderHash(
         'LEHV6nWB2yk8pyo0adR*.7kCMdnj',
+        'blurhash',
         4,
         3
       ),
+      NativeAnimatedImageLoader.decodePlaceholderHash(
+        'XAcKNZqAh3dwiIiHeHiIh4BwB/iI',
+        'thumbhash',
+        6,
+        4
+      ),
       NativeAnimatedImageLoader.extractDominantColor('test-bytes'),
     ])
-      .then(([pixels, color]) => {
-        const expectedBytes = 4 * 3 * 4;
-        const decodedBytes = pixels
-          ? Math.floor((pixels.replace(/[=]+$/, '').length * 3) / 4)
-          : 0;
+      .then(([blurhashPixels, thumbhashPixels, color]) => {
         setNativeCheck(
-          `TurboModule OK — Blurhash decoded ${decodedBytes}/${expectedBytes} bytes, color: ${color}`
+          `TurboModule OK — Blurhash ${decodedByteCount(blurhashPixels)}/${4 * 3 * 4}` +
+            ` bytes, ThumbHash ${decodedByteCount(thumbhashPixels)}/${6 * 4 * 4}` +
+            ` bytes, color: ${color}`
         );
       })
       .catch((error) => {
