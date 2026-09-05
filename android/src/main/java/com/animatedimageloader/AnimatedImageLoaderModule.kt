@@ -8,15 +8,6 @@ import kotlin.concurrent.thread
 class AnimatedImageLoaderModule(reactContext: ReactApplicationContext) :
   NativeAnimatedImageLoaderSpec(reactContext) {
 
-  private external fun nativeDecodePlaceholderHash(
-    hash: String,
-    hashType: String,
-    width: Double,
-    height: Double
-  ): String
-
-  private external fun nativeExtractDominantColor(base64Bytes: String): String
-
   // Blurhash/ThumbHash decoding delegates to the shared cpp/ core via JNI,
   // dispatched onto a background thread to keep the JS thread free.
   override fun decodePlaceholderHash(
@@ -27,21 +18,19 @@ class AnimatedImageLoaderModule(reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     thread {
-      promise.resolve(nativeDecodePlaceholderHash(hash, hashType, width, height))
+      promise.resolve(
+        AnimatedImageLoaderNative.decodePlaceholderHash(hash, hashType, width, height)
+      )
     }
   }
 
   override fun extractDominantColor(base64Bytes: String, promise: Promise) {
     thread {
-      promise.resolve(nativeExtractDominantColor(base64Bytes))
+      promise.resolve(AnimatedImageLoaderNative.extractDominantColor(base64Bytes))
     }
   }
 
   companion object {
     const val NAME = NativeAnimatedImageLoaderSpec.NAME
-
-    init {
-      System.loadLibrary("animatedimageloader")
-    }
   }
 }

@@ -108,7 +108,12 @@
   "codegenConfig": {
     "name": "AnimatedImageLoaderSpec",
     "type": "all",
-    "jsSrcsDir": "src/specs"
+    "jsSrcsDir": "src/specs",
+    "ios": {
+      "componentProvider": {
+        "AnimatedImageLoaderView": "AnimatedImageLoaderView"
+      }
+    }
   },
   "workspaces": [
     "example"
