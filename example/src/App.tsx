@@ -73,13 +73,20 @@ export default function App() {
       <Text testID="palette-check" style={styles.nativeCheck}>
         {paletteCheck}
       </Text>
-      {/* #55 — decoding this placeholder and firing onPaletteExtracted with
-          the computed dominant color proves the Fabric-side k-means wiring
-          works end-to-end, not just the TurboModule path above. */}
+      {/* #55/#56 — the native Fabric view: decodes the placeholder (firing
+          onPaletteExtracted with the computed dominant color), fetches the
+          real image, and crossfades between them natively on iOS (#56).
+          Android still renders an empty view for now — its native
+          rendering lands in #57. Placeholder hash is an unrelated test
+          vector, so its color won't match the fetched photo — that's
+          expected for this scaffolding demo. */}
       <AnimatedImageLoaderView
-        source={{ uri: '' }}
+        source={{
+          uri: 'https://images.pexels.com/photos/14133018/pexels-photo-14133018.jpeg',
+        }}
         placeholderHash={'LEHV6nWB2yk8pyo0adR*.7kCMdnj'}
         placeholderType={'blurhash'}
+        fadeDuration={600}
         onPaletteExtracted={(event) => {
           setPaletteCheck(
             `onPaletteExtracted OK — color: ${event.nativeEvent.color}`
@@ -120,7 +127,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   fabricCheck: {
-    width: 1,
-    height: 1,
+    width: 200,
+    height: 200,
+    marginTop: 12,
+    borderRadius: 8,
+    overflow: 'hidden',
   },
 });
