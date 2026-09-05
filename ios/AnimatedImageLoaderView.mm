@@ -10,11 +10,51 @@ using namespace facebook::react;
 using facebook::react::animatedimageloader::AnimatedImageLoaderCore;
 
 namespace {
-// Sampling size for the placeholder decode feeding dominant-color
-// extraction — this only needs enough pixels for a representative ambient
-// color, not to render the placeholder itself (that lands in a later phase
-// alongside the real crossfade rendering).
-constexpr double kPaletteSampleSize = 8;
+
+// Placeholders are decoded small and stretched to fill — this is the
+// standard Blurhash/ThumbHash usage pattern (a tiny decode upscaled with
+// bilinear filtering gives the characteristic smooth blur) and also doubles
+// as the dominant-color sample buffer.
+constexpr int kPlaceholderDecodeSize = 32;
+
+UIImage *_Nullable UIImageFromRGBA8888Base64(const std::string &base64, int width, int height)
+{
+  if (base64.empty()) {
+    return nil;
+  }
+
+  NSData *data = [[NSData alloc] initWithBase64EncodedString:[NSString stringWithUTF8String:base64.c_str()]
+                                                       options:0];
+  if (data.length != (NSUInteger)(width * height * 4)) {
+    return nil;
+  }
+
+  CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+  CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
+  CGImageRef cgImage = CGImageCreate(
+      (size_t)width,
+      (size_t)height,
+      8,
+      32,
+      (size_t)width * 4,
+      colorSpace,
+      kCGBitmapByteOrderDefault | kCGImageAlphaLast,
+      provider,
+      NULL,
+      false,
+      kCGRenderingIntentDefault);
+  CGColorSpaceRelease(colorSpace);
+  CGDataProviderRelease(provider);
+
+  if (!cgImage) {
+    return nil;
+  }
+
+  UIImage *image = [UIImage imageWithCGImage:cgImage];
+  CGImageRelease(cgImage);
+  return image;
+}
+
 } // namespace
 
 @interface AnimatedImageLoaderView () <RCTAnimatedImageLoaderViewViewProtocol>
@@ -22,7 +62,9 @@ constexpr double kPaletteSampleSize = 8;
 @end
 
 @implementation AnimatedImageLoaderView {
-  UIView *_view;
+  UIImageView *_placeholderImageView;
+  UIImageView *_finalImageView;
+  NSURLSessionDataTask *_imageTask;
 }
 
 + (ComponentDescriptorProvider)componentDescriptorProvider
@@ -36,10 +78,19 @@ constexpr double kPaletteSampleSize = 8;
     static const auto defaultProps = std::make_shared<const AnimatedImageLoaderViewProps>();
     _props = defaultProps;
 
-    // Scaffolding only — no rendering logic yet (native crossfade/shimmer
-    // compositing lands in a later phase).
-    _view = [[UIView alloc] initWithFrame:self.bounds];
-    self.contentView = _view;
+    _placeholderImageView = [[UIImageView alloc] initWithFrame:self.bounds];
+    _placeholderImageView.contentMode = UIViewContentModeScaleAspectFill;
+    _placeholderImageView.clipsToBounds = YES;
+    _placeholderImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+
+    _finalImageView = [[UIImageView alloc] initWithFrame:self.bounds];
+    _finalImageView.contentMode = UIViewContentModeScaleAspectFill;
+    _finalImageView.clipsToBounds = YES;
+    _finalImageView.alpha = 0;
+    _finalImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+
+    [self addSubview:_placeholderImageView];
+    [self addSubview:_finalImageView];
   }
 
   return self;
@@ -51,29 +102,101 @@ constexpr double kPaletteSampleSize = 8;
   const auto &newConcreteProps = static_cast<const AnimatedImageLoaderViewProps &>(*props);
 
   if (!newConcreteProps.placeholderHash.empty() &&
-      newConcreteProps.placeholderHash != oldConcreteProps.placeholderHash) {
-    std::string hash = newConcreteProps.placeholderHash;
-    std::string hashType = toString(newConcreteProps.placeholderType);
+      (newConcreteProps.placeholderHash != oldConcreteProps.placeholderHash ||
+       newConcreteProps.placeholderType != oldConcreteProps.placeholderType)) {
+    [self _decodeAndApplyPlaceholder:newConcreteProps.placeholderHash
+                            hashType:toString(newConcreteProps.placeholderType)];
+  }
 
-    // On the very first mount, Fabric calls updateEventEmitter: *after*
-    // updateProps:oldProps:, so _eventEmitter can still be null here — read
-    // it lazily inside the block (by which time mounting has finished)
-    // rather than capturing it upfront.
-    __weak AnimatedImageLoaderView *weakSelf = self;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-      std::string pixels = AnimatedImageLoaderCore::decodePlaceholderHash(
-          hash, hashType, kPaletteSampleSize, kPaletteSampleSize);
-      std::string color = AnimatedImageLoaderCore::extractDominantColor(pixels);
-
-      AnimatedImageLoaderView *strongSelf = weakSelf;
-      if (strongSelf && strongSelf->_eventEmitter) {
-        static_cast<const AnimatedImageLoaderViewEventEmitter &>(*strongSelf->_eventEmitter)
-            .onPaletteExtracted({color});
-      }
-    });
+  NSString *newUri = [NSString stringWithUTF8String:newConcreteProps.source.uri.c_str()];
+  NSString *oldUri = [NSString stringWithUTF8String:oldConcreteProps.source.uri.c_str()];
+  if (newUri.length > 0 && ![newUri isEqualToString:oldUri]) {
+    [self _loadFinalImage:newUri fadeDurationMs:newConcreteProps.fadeDuration];
   }
 
   [super updateProps:props oldProps:oldProps];
+}
+
+- (void)_decodeAndApplyPlaceholder:(const std::string &)hash hashType:(const std::string &)hashType
+{
+  __weak AnimatedImageLoaderView *weakSelf = self;
+
+  // On the very first mount, Fabric calls updateEventEmitter: *after*
+  // updateProps:oldProps:, so _eventEmitter can still be null here — read it
+  // lazily once decoding has finished (by which time mounting is done)
+  // rather than capturing it upfront.
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    std::string pixels = AnimatedImageLoaderCore::decodePlaceholderHash(
+        hash, hashType, kPlaceholderDecodeSize, kPlaceholderDecodeSize);
+    std::string color = AnimatedImageLoaderCore::extractDominantColor(pixels);
+    UIImage *image = UIImageFromRGBA8888Base64(pixels, kPlaceholderDecodeSize, kPlaceholderDecodeSize);
+
+    AnimatedImageLoaderView *strongSelf = weakSelf;
+    if (strongSelf && strongSelf->_eventEmitter) {
+      static_cast<const AnimatedImageLoaderViewEventEmitter &>(*strongSelf->_eventEmitter)
+          .onPaletteExtracted({color});
+    }
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+      AnimatedImageLoaderView *strongSelfMain = weakSelf;
+      if (strongSelfMain) {
+        strongSelfMain->_placeholderImageView.image = image;
+      }
+    });
+  });
+}
+
+- (void)_loadFinalImage:(NSString *)uri fadeDurationMs:(double)fadeDurationMs
+{
+  [_imageTask cancel];
+
+  NSURL *url = [NSURL URLWithString:uri];
+  if (!url) {
+    return;
+  }
+
+  __weak AnimatedImageLoaderView *weakSelf = self;
+  _imageTask = [[NSURLSession sharedSession]
+      dataTaskWithURL:url
+    completionHandler:^(NSData *_Nullable data, NSURLResponse *_Nullable response, NSError *_Nullable error) {
+      if (error != nil || data.length == 0) {
+        return;
+      }
+      UIImage *image = [UIImage imageWithData:data];
+      if (!image) {
+        return;
+      }
+
+      dispatch_async(dispatch_get_main_queue(), ^{
+        AnimatedImageLoaderView *strongSelf = weakSelf;
+        if (!strongSelf) {
+          return;
+        }
+        strongSelf->_finalImageView.image = image;
+        strongSelf->_finalImageView.alpha = 0;
+        [UIView animateWithDuration:fadeDurationMs / 1000.0
+                          animations:^{
+                            strongSelf->_finalImageView.alpha = 1;
+                          }];
+      });
+    }];
+  [_imageTask resume];
+}
+
+- (void)prepareForRecycle
+{
+  [super prepareForRecycle];
+
+  [_imageTask cancel];
+  _imageTask = nil;
+  _placeholderImageView.image = nil;
+  _finalImageView.image = nil;
+  _finalImageView.alpha = 0;
+}
+
+- (void)dealloc
+{
+  [_imageTask cancel];
 }
 
 @end
