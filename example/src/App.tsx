@@ -59,7 +59,7 @@ export default function App() {
       </View>
       <AnimatedImgLoader
         imageUri={
-          'https://images.pexels.com/photos/1366919/pexels-photo-1366919.jpeg'
+          'https://images.pexels.com/photos/14133018/pexels-photo-14133018.jpeg'
         }
       />
       {/* Phase 1 native-scaffolding verification (#43) — proves the
