@@ -10,12 +10,15 @@ Java_com_animatedimageloader_AnimatedImageLoaderModule_nativeDecodePlaceholderHa
     JNIEnv* env,
     jobject /* this */,
     jstring hash,
+    jstring hashType,
     jdouble width,
     jdouble height) {
   const char* hashChars = env->GetStringUTFChars(hash, nullptr);
+  const char* hashTypeChars = env->GetStringUTFChars(hashType, nullptr);
   std::string result = AnimatedImageLoaderCore::decodePlaceholderHash(
-      std::string(hashChars), width, height);
+      std::string(hashChars), std::string(hashTypeChars), width, height);
   env->ReleaseStringUTFChars(hash, hashChars);
+  env->ReleaseStringUTFChars(hashType, hashTypeChars);
   return env->NewStringUTF(result.c_str());
 }
 

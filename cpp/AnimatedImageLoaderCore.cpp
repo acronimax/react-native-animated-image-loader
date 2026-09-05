@@ -11,61 +11,9 @@ namespace facebook::react::animatedimageloader {
 
 namespace {
 
-// Standard Blurhash base83 alphabet.
-constexpr char kBase83Chars[] =
-    "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-    "#$%*+,-.:;=?@[]^_{|}~";
-
-int decode83(const std::string& str, size_t start, size_t length) {
-  int value = 0;
-  for (size_t i = start; i < start + length; i++) {
-    const char* ptr = std::strchr(kBase83Chars, str[i]);
-    if (ptr == nullptr) {
-      return -1;
-    }
-    value = value * 83 + static_cast<int>(ptr - kBase83Chars);
-  }
-  return value;
-}
-
-double signedPow(double base, double exponent) {
-  return std::copysign(std::pow(std::abs(base), exponent), base);
-}
-
-double sRGBToLinear(int value) {
-  double v = static_cast<double>(value) / 255.0;
-  if (v <= 0.04045) {
-    return v / 12.92;
-  }
-  return std::pow((v + 0.055) / 1.055, 2.4);
-}
-
-uint8_t linearToSRGB(double value) {
-  double v = std::clamp(value, 0.0, 1.0);
-  double out = v <= 0.0031308 ? v * 12.92 * 255.0
-                               : (1.055 * std::pow(v, 1.0 / 2.4) - 0.055) * 255.0;
-  return static_cast<uint8_t>(std::clamp(std::round(out), 0.0, 255.0));
-}
-
-std::array<double, 3> decodeDC(int value) {
-  return {
-      sRGBToLinear((value >> 16) & 0xFF),
-      sRGBToLinear((value >> 8) & 0xFF),
-      sRGBToLinear(value & 0xFF),
-  };
-}
-
-std::array<double, 3> decodeAC(int value, double maximumValue) {
-  int quantR = value / (19 * 19);
-  int quantG = (value / 19) % 19;
-  int quantB = value % 19;
-
-  return {
-      signedPow((quantR - 9) / 9.0, 2.0) * maximumValue,
-      signedPow((quantG - 9) / 9.0, 2.0) * maximumValue,
-      signedPow((quantB - 9) / 9.0, 2.0) * maximumValue,
-  };
-}
+// ---------------------------------------------------------------------------
+// Shared base64 helpers
+// ---------------------------------------------------------------------------
 
 std::string base64Encode(const std::vector<uint8_t>& bytes) {
   static const char kTable[] =
@@ -103,12 +51,99 @@ std::string base64Encode(const std::vector<uint8_t>& bytes) {
   return out;
 }
 
-} // namespace
+std::vector<uint8_t> base64Decode(const std::string& in) {
+  static int8_t table[256];
+  static bool initialized = false;
+  if (!initialized) {
+    std::fill(std::begin(table), std::end(table), -1);
+    const char* chars =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    for (int i = 0; i < 64; i++) {
+      table[static_cast<uint8_t>(chars[i])] = static_cast<int8_t>(i);
+    }
+    initialized = true;
+  }
 
-std::string AnimatedImageLoaderCore::decodePlaceholderHash(
-    const std::string& hash,
-    double width,
-    double height) {
+  std::vector<uint8_t> out;
+  int value = 0;
+  int bits = -8;
+  for (unsigned char c : in) {
+    if (c == '=') {
+      break;
+    }
+    if (table[c] == -1) {
+      continue;
+    }
+    value = (value << 6) + table[c];
+    bits += 6;
+    if (bits >= 0) {
+      out.push_back(static_cast<uint8_t>((value >> bits) & 0xFF));
+      bits -= 8;
+    }
+  }
+  return out;
+}
+
+// ---------------------------------------------------------------------------
+// Blurhash decoding
+// ---------------------------------------------------------------------------
+
+constexpr char kBase83Chars[] =
+    "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+    "#$%*+,-.:;=?@[]^_{|}~";
+
+int decode83(const std::string& str, size_t start, size_t length) {
+  int value = 0;
+  for (size_t i = start; i < start + length; i++) {
+    const char* ptr = std::strchr(kBase83Chars, str[i]);
+    if (ptr == nullptr) {
+      return -1;
+    }
+    value = value * 83 + static_cast<int>(ptr - kBase83Chars);
+  }
+  return value;
+}
+
+double signedPow(double base, double exponent) {
+  return std::copysign(std::pow(std::abs(base), exponent), base);
+}
+
+double sRGBToLinear(int value) {
+  double v = static_cast<double>(value) / 255.0;
+  if (v <= 0.04045) {
+    return v / 12.92;
+  }
+  return std::pow((v + 0.055) / 1.055, 2.4);
+}
+
+uint8_t linearToSRGB(double value) {
+  double v = std::clamp(value, 0.0, 1.0);
+  double out = v <= 0.0031308 ? v * 12.92 * 255.0
+                               : (1.055 * std::pow(v, 1.0 / 2.4) - 0.055) * 255.0;
+  return static_cast<uint8_t>(std::clamp(std::round(out), 0.0, 255.0));
+}
+
+std::array<double, 3> decodeBlurhashDC(int value) {
+  return {
+      sRGBToLinear((value >> 16) & 0xFF),
+      sRGBToLinear((value >> 8) & 0xFF),
+      sRGBToLinear(value & 0xFF),
+  };
+}
+
+std::array<double, 3> decodeBlurhashAC(int value, double maximumValue) {
+  int quantR = value / (19 * 19);
+  int quantG = (value / 19) % 19;
+  int quantB = value % 19;
+
+  return {
+      signedPow((quantR - 9) / 9.0, 2.0) * maximumValue,
+      signedPow((quantG - 9) / 9.0, 2.0) * maximumValue,
+      signedPow((quantB - 9) / 9.0, 2.0) * maximumValue,
+  };
+}
+
+std::string decodeBlurhash(const std::string& hash, int w, int h) {
   if (hash.size() < 6) {
     return "";
   }
@@ -136,18 +171,15 @@ std::string AnimatedImageLoaderCore::decodePlaceholderHash(
   if (dc < 0) {
     return "";
   }
-  colors[0] = decodeDC(dc);
+  colors[0] = decodeBlurhashDC(dc);
 
   for (size_t i = 1; i < colors.size(); i++) {
     int ac = decode83(hash, 4 + i * 2, 2);
     if (ac < 0) {
       return "";
     }
-    colors[i] = decodeAC(ac, maximumValue);
+    colors[i] = decodeBlurhashAC(ac, maximumValue);
   }
-
-  int w = static_cast<int>(std::max(1.0, std::round(width)));
-  int h = static_cast<int>(std::max(1.0, std::round(height)));
 
   std::vector<uint8_t> pixels(static_cast<size_t>(w) * h * 4);
 
@@ -177,6 +209,152 @@ std::string AnimatedImageLoaderCore::decodePlaceholderHash(
   }
 
   return base64Encode(pixels);
+}
+
+// ---------------------------------------------------------------------------
+// ThumbHash decoding
+// ---------------------------------------------------------------------------
+
+std::vector<double> decodeThumbHashChannel(
+    const std::vector<uint8_t>& hash,
+    int acStart,
+    int& acIndex,
+    int nx,
+    int ny,
+    double scale) {
+  std::vector<double> ac;
+  for (int cy = 0; cy < ny; cy++) {
+    for (int cx = cy ? 0 : 1; cx * ny < nx * (ny - cy); cx++) {
+      int byteIdx = acStart + (acIndex >> 1);
+      int shift = (acIndex & 1) << 2;
+      acIndex++;
+      int nibble = (hash[byteIdx] >> shift) & 15;
+      ac.push_back((nibble / 7.5 - 1.0) * scale);
+    }
+  }
+  return ac;
+}
+
+std::string decodeThumbHash(const std::string& hashStr, int w, int h) {
+  std::vector<uint8_t> hash = base64Decode(hashStr);
+  if (hash.size() < 5) {
+    return "";
+  }
+
+  int header24 = hash[0] | (hash[1] << 8) | (hash[2] << 16);
+  int header16 = hash[3] | (hash[4] << 8);
+
+  double l_dc = (header24 & 63) / 63.0;
+  double p_dc = ((header24 >> 6) & 63) / 31.5 - 1.0;
+  double q_dc = ((header24 >> 12) & 63) / 31.5 - 1.0;
+  double l_scale = ((header24 >> 18) & 31) / 31.0;
+  int hasAlpha = header24 >> 23;
+  double p_scale = ((header16 >> 3) & 63) / 63.0;
+  double q_scale = ((header16 >> 9) & 63) / 63.0;
+  int isLandscape = header16 >> 15;
+  int lx = std::max(3, isLandscape ? (hasAlpha ? 5 : 7) : (header16 & 7));
+  int ly = std::max(3, isLandscape ? (header16 & 7) : (hasAlpha ? 5 : 7));
+
+  if (hash.size() < static_cast<size_t>(hasAlpha ? 6 : 5)) {
+    return "";
+  }
+  double a_dc = hasAlpha ? (hash[5] & 15) / 15.0 : 1.0;
+  double a_scale = (hash[5] >> 4) / 15.0;
+
+  int acStart = hasAlpha ? 6 : 5;
+  int acIndex = 0;
+  std::vector<double> l_ac =
+      decodeThumbHashChannel(hash, acStart, acIndex, lx, ly, l_scale);
+  std::vector<double> p_ac =
+      decodeThumbHashChannel(hash, acStart, acIndex, 3, 3, p_scale * 1.25);
+  std::vector<double> q_ac =
+      decodeThumbHashChannel(hash, acStart, acIndex, 3, 3, q_scale * 1.25);
+  std::vector<double> a_ac;
+  if (hasAlpha) {
+    a_ac = decodeThumbHashChannel(hash, acStart, acIndex, 5, 5, a_scale);
+  }
+
+  std::vector<uint8_t> pixels(static_cast<size_t>(w) * h * 4);
+  std::vector<double> fx(static_cast<size_t>(std::max(lx, hasAlpha ? 5 : 3)));
+  std::vector<double> fy(static_cast<size_t>(std::max(ly, hasAlpha ? 5 : 3)));
+
+  for (int y = 0; y < h; y++) {
+    for (int x = 0; x < w; x++) {
+      double l = l_dc, p = p_dc, q = q_dc, a = a_dc;
+
+      int nFx = std::max(lx, hasAlpha ? 5 : 3);
+      for (int cx = 0; cx < nFx; cx++) {
+        fx[cx] = std::cos(M_PI / w * (x + 0.5) * cx);
+      }
+      int nFy = std::max(ly, hasAlpha ? 5 : 3);
+      for (int cy = 0; cy < nFy; cy++) {
+        fy[cy] = std::cos(M_PI / h * (y + 0.5) * cy);
+      }
+
+      {
+        int j = 0;
+        for (int cy = 0; cy < ly; cy++) {
+          double fy2 = fy[cy] * 2;
+          for (int cx = cy ? 0 : 1; cx * ly < lx * (ly - cy); cx++, j++) {
+            l += l_ac[j] * fx[cx] * fy2;
+          }
+        }
+      }
+
+      {
+        int j = 0;
+        for (int cy = 0; cy < 3; cy++) {
+          double fy2 = fy[cy] * 2;
+          for (int cx = cy ? 0 : 1; cx < 3 - cy; cx++, j++) {
+            double f = fx[cx] * fy2;
+            p += p_ac[j] * f;
+            q += q_ac[j] * f;
+          }
+        }
+      }
+
+      if (hasAlpha) {
+        int j = 0;
+        for (int cy = 0; cy < 5; cy++) {
+          double fy2 = fy[cy] * 2;
+          for (int cx = cy ? 0 : 1; cx < 5 - cy; cx++, j++) {
+            a += a_ac[j] * fx[cx] * fy2;
+          }
+        }
+      }
+
+      double b = l - (2.0 / 3.0) * p;
+      double r = (3 * l - b + q) / 2;
+      double g = r - q;
+
+      size_t idx = (static_cast<size_t>(y) * w + x) * 4;
+      pixels[idx + 0] = static_cast<uint8_t>(std::clamp(255.0 * r, 0.0, 255.0));
+      pixels[idx + 1] = static_cast<uint8_t>(std::clamp(255.0 * g, 0.0, 255.0));
+      pixels[idx + 2] = static_cast<uint8_t>(std::clamp(255.0 * b, 0.0, 255.0));
+      pixels[idx + 3] = static_cast<uint8_t>(std::clamp(255.0 * a, 0.0, 255.0));
+    }
+  }
+
+  return base64Encode(pixels);
+}
+
+} // namespace
+
+std::string AnimatedImageLoaderCore::decodePlaceholderHash(
+    const std::string& hash,
+    const std::string& hashType,
+    double width,
+    double height) {
+  int w = static_cast<int>(std::max(1.0, std::round(width)));
+  int h = static_cast<int>(std::max(1.0, std::round(height)));
+
+  if (hashType == "blurhash") {
+    return decodeBlurhash(hash, w, h);
+  }
+  if (hashType == "thumbhash") {
+    return decodeThumbHash(hash, w, h);
+  }
+  return "";
 }
 
 std::string AnimatedImageLoaderCore::extractDominantColor(

@@ -10,19 +10,24 @@ class AnimatedImageLoaderModule(reactContext: ReactApplicationContext) :
 
   private external fun nativeDecodePlaceholderHash(
     hash: String,
+    hashType: String,
     width: Double,
     height: Double
   ): String
 
   private external fun nativeExtractDominantColor(base64Bytes: String): String
 
-  // Scaffolding only — real Blurhash/ThumbHash JSI decoding lands in a later
-  // phase. The JNI call into AnimatedImageLoaderCore (shared cpp/) is
-  // dispatched onto a background thread to validate the threading model
-  // early.
-  override fun decodePlaceholderHash(hash: String, width: Double, height: Double, promise: Promise) {
+  // Blurhash/ThumbHash decoding delegates to the shared cpp/ core via JNI,
+  // dispatched onto a background thread to keep the JS thread free.
+  override fun decodePlaceholderHash(
+    hash: String,
+    hashType: String,
+    width: Double,
+    height: Double,
+    promise: Promise
+  ) {
     thread {
-      promise.resolve(nativeDecodePlaceholderHash(hash, width, height))
+      promise.resolve(nativeDecodePlaceholderHash(hash, hashType, width, height))
     }
   }
 
