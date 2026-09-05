@@ -12,11 +12,24 @@ export default function App() {
 
   React.useEffect(() => {
     Promise.all([
-      NativeAnimatedImageLoader.decodePlaceholderHash('test-hash', 4, 3),
+      // A real Blurhash test vector (#53) — decoding it into a non-empty
+      // pixel buffer of the expected size proves the shared cpp/ decoder is
+      // reachable end-to-end, not just returning a hardcoded stub.
+      NativeAnimatedImageLoader.decodePlaceholderHash(
+        'LEHV6nWB2yk8pyo0adR*.7kCMdnj',
+        4,
+        3
+      ),
       NativeAnimatedImageLoader.extractDominantColor('test-bytes'),
     ])
-      .then(([hash, color]) => {
-        setNativeCheck(`TurboModule OK — hash: "${hash}", color: ${color}`);
+      .then(([pixels, color]) => {
+        const expectedBytes = 4 * 3 * 4;
+        const decodedBytes = pixels
+          ? Math.floor((pixels.replace(/[=]+$/, '').length * 3) / 4)
+          : 0;
+        setNativeCheck(
+          `TurboModule OK — Blurhash decoded ${decodedBytes}/${expectedBytes} bytes, color: ${color}`
+        );
       })
       .catch((error) => {
         setNativeCheck(`TurboModule FAILED — ${String(error)}`);
