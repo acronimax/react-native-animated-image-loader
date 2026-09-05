@@ -9,6 +9,9 @@ import AnimatedImageLoaderView from '../../src/specs/AnimatedImageLoaderViewNati
 
 export default function App() {
   const [nativeCheck, setNativeCheck] = React.useState('checking…');
+  const [paletteCheck, setPaletteCheck] = React.useState(
+    'waiting for onPaletteExtracted…'
+  );
 
   React.useEffect(() => {
     const decodedByteCount = (pixels: string) =>
@@ -67,8 +70,21 @@ export default function App() {
       <Text testID="native-check" style={styles.nativeCheck}>
         {nativeCheck}
       </Text>
+      <Text testID="palette-check" style={styles.nativeCheck}>
+        {paletteCheck}
+      </Text>
+      {/* #55 — decoding this placeholder and firing onPaletteExtracted with
+          the computed dominant color proves the Fabric-side k-means wiring
+          works end-to-end, not just the TurboModule path above. */}
       <AnimatedImageLoaderView
         source={{ uri: '' }}
+        placeholderHash={'LEHV6nWB2yk8pyo0adR*.7kCMdnj'}
+        placeholderType={'blurhash'}
+        onPaletteExtracted={(event) => {
+          setPaletteCheck(
+            `onPaletteExtracted OK — color: ${event.nativeEvent.color}`
+          );
+        }}
         style={styles.fabricCheck}
       />
     </SafeAreaView>

@@ -6,7 +6,7 @@
 using facebook::react::animatedimageloader::AnimatedImageLoaderCore;
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_com_animatedimageloader_AnimatedImageLoaderModule_nativeDecodePlaceholderHash(
+Java_com_animatedimageloader_AnimatedImageLoaderNative_decodePlaceholderHash(
     JNIEnv* env,
     jobject /* this */,
     jstring hash,
@@ -23,7 +23,7 @@ Java_com_animatedimageloader_AnimatedImageLoaderModule_nativeDecodePlaceholderHa
 }
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_com_animatedimageloader_AnimatedImageLoaderModule_nativeExtractDominantColor(
+Java_com_animatedimageloader_AnimatedImageLoaderNative_extractDominantColor(
     JNIEnv* env,
     jobject /* this */,
     jstring base64Bytes) {

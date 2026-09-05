@@ -338,6 +338,94 @@ std::string decodeThumbHash(const std::string& hashStr, int w, int h) {
   return base64Encode(pixels);
 }
 
+// ---------------------------------------------------------------------------
+// Dominant-color extraction (k-means)
+// ---------------------------------------------------------------------------
+
+std::string kmeansDominantColor(
+    const std::vector<uint8_t>& rgba,
+    int k = 5,
+    int maxIterations = 10) {
+  std::vector<std::array<int, 3>> pixels;
+  for (size_t i = 0; i + 3 < rgba.size(); i += 4) {
+    // Skip near-transparent pixels — they shouldn't influence the ambient
+    // color of a mostly-opaque image.
+    if (rgba[i + 3] >= 16) {
+      pixels.push_back({rgba[i], rgba[i + 1], rgba[i + 2]});
+    }
+  }
+
+  if (pixels.empty()) {
+    return "#000000";
+  }
+
+  int n = static_cast<int>(pixels.size());
+  k = std::min(k, n);
+
+  // Deterministic initialization: evenly spaced samples through the pixel
+  // list, so the same input always produces the same result.
+  std::vector<std::array<double, 3>> centroids(static_cast<size_t>(k));
+  for (int i = 0; i < k; i++) {
+    const auto& p = pixels[(static_cast<size_t>(i) * n) / k];
+    centroids[i] = {
+        static_cast<double>(p[0]),
+        static_cast<double>(p[1]),
+        static_cast<double>(p[2])};
+  }
+
+  std::vector<int> assignments(static_cast<size_t>(n), 0);
+  for (int iter = 0; iter < maxIterations; iter++) {
+    for (int pi = 0; pi < n; pi++) {
+      const auto& p = pixels[pi];
+      int best = 0;
+      double bestDist = -1;
+      for (int ci = 0; ci < k; ci++) {
+        double dr = p[0] - centroids[ci][0];
+        double dg = p[1] - centroids[ci][1];
+        double db = p[2] - centroids[ci][2];
+        double dist = dr * dr + dg * dg + db * db;
+        if (bestDist < 0 || dist < bestDist) {
+          bestDist = dist;
+          best = ci;
+        }
+      }
+      assignments[pi] = best;
+    }
+
+    std::vector<std::array<double, 4>> sums(
+        static_cast<size_t>(k), std::array<double, 4>{0, 0, 0, 0});
+    for (int pi = 0; pi < n; pi++) {
+      int c = assignments[pi];
+      sums[c][0] += pixels[pi][0];
+      sums[c][1] += pixels[pi][1];
+      sums[c][2] += pixels[pi][2];
+      sums[c][3] += 1;
+    }
+    for (int ci = 0; ci < k; ci++) {
+      if (sums[ci][3] > 0) {
+        centroids[ci][0] = sums[ci][0] / sums[ci][3];
+        centroids[ci][1] = sums[ci][1] / sums[ci][3];
+        centroids[ci][2] = sums[ci][2] / sums[ci][3];
+      }
+    }
+  }
+
+  std::vector<int> counts(static_cast<size_t>(k), 0);
+  for (int a : assignments) {
+    counts[a]++;
+  }
+  int dominant = static_cast<int>(
+      std::max_element(counts.begin(), counts.end()) - counts.begin());
+
+  int r = static_cast<int>(std::clamp(std::round(centroids[dominant][0]), 0.0, 255.0));
+  int g = static_cast<int>(std::clamp(std::round(centroids[dominant][1]), 0.0, 255.0));
+  int b = static_cast<int>(std::clamp(std::round(centroids[dominant][2]), 0.0, 255.0));
+
+  char buf[8];
+  snprintf(buf, sizeof(buf), "#%02x%02x%02x", r, g, b);
+  return std::string(buf);
+}
+
 } // namespace
 
 std::string AnimatedImageLoaderCore::decodePlaceholderHash(
@@ -359,7 +447,7 @@ std::string AnimatedImageLoaderCore::decodePlaceholderHash(
 
 std::string AnimatedImageLoaderCore::extractDominantColor(
     const std::string& base64Bytes) {
-  return "#000000";
+  return kmeansDominantColor(base64Decode(base64Bytes));
 }
 
 } // namespace facebook::react::animatedimageloader
