@@ -94,6 +94,16 @@ export default function App() {
         }}
         style={styles.fabricCheck}
       />
+      {/* #58 — placeholderType 'shimmer-shader' with no source: renders the
+          GPU shimmer sweep indefinitely (iOS: Metal; Android: still a no-op
+          view for now, that's #59), proving it's driven by the GPU, not RN
+          Animated. */}
+      <Text style={styles.nativeCheck}>shimmer-shader placeholder:</Text>
+      <AnimatedImageLoaderView
+        source={{ uri: '' }}
+        placeholderType={'shimmer-shader'}
+        style={styles.fabricCheck}
+      />
     </SafeAreaView>
   );
 }

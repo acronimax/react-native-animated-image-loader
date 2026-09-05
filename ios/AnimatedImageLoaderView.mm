@@ -1,5 +1,6 @@
 #import "AnimatedImageLoaderView.h"
 #import "AnimatedImageLoaderCore.h"
+#import "AnimatedImageLoaderShimmerView.h"
 
 #import <react/renderer/components/AnimatedImageLoaderSpec/ComponentDescriptors.h>
 #import <react/renderer/components/AnimatedImageLoaderSpec/EventEmitters.h>
@@ -64,6 +65,7 @@ UIImage *_Nullable UIImageFromRGBA8888Base64(const std::string &base64, int widt
 @implementation AnimatedImageLoaderView {
   UIImageView *_placeholderImageView;
   UIImageView *_finalImageView;
+  AnimatedImageLoaderShimmerView *_shimmerView;
   NSURLSessionDataTask *_imageTask;
 }
 
@@ -101,11 +103,22 @@ UIImage *_Nullable UIImageFromRGBA8888Base64(const std::string &base64, int widt
   const auto &oldConcreteProps = static_cast<const AnimatedImageLoaderViewProps &>(*_props);
   const auto &newConcreteProps = static_cast<const AnimatedImageLoaderViewProps &>(*props);
 
-  if (!newConcreteProps.placeholderHash.empty() &&
-      (newConcreteProps.placeholderHash != oldConcreteProps.placeholderHash ||
-       newConcreteProps.placeholderType != oldConcreteProps.placeholderType)) {
-    [self _decodeAndApplyPlaceholder:newConcreteProps.placeholderHash
-                            hashType:toString(newConcreteProps.placeholderType)];
+  bool typeChanged = newConcreteProps.placeholderType != oldConcreteProps.placeholderType;
+  bool isShimmer = newConcreteProps.placeholderType == AnimatedImageLoaderViewPlaceholderType::ShimmerShader;
+
+  if (isShimmer) {
+    if (typeChanged) {
+      [self _showShimmer];
+    }
+  } else {
+    if (typeChanged) {
+      [self _hideShimmer];
+    }
+    if (!newConcreteProps.placeholderHash.empty() &&
+        (newConcreteProps.placeholderHash != oldConcreteProps.placeholderHash || typeChanged)) {
+      [self _decodeAndApplyPlaceholder:newConcreteProps.placeholderHash
+                              hashType:toString(newConcreteProps.placeholderType)];
+    }
   }
 
   NSString *newUri = [NSString stringWithUTF8String:newConcreteProps.source.uri.c_str()];
@@ -115,6 +128,25 @@ UIImage *_Nullable UIImageFromRGBA8888Base64(const std::string &base64, int widt
   }
 
   [super updateProps:props oldProps:oldProps];
+}
+
+- (void)_showShimmer
+{
+  if (!_shimmerView) {
+    _shimmerView = [[AnimatedImageLoaderShimmerView alloc] initWithFrame:self.bounds];
+    _shimmerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [self insertSubview:_shimmerView atIndex:0];
+  }
+  _shimmerView.hidden = NO;
+  _shimmerView.paused = NO;
+  _placeholderImageView.hidden = YES;
+}
+
+- (void)_hideShimmer
+{
+  _shimmerView.hidden = YES;
+  _shimmerView.paused = YES;
+  _placeholderImageView.hidden = NO;
 }
 
 - (void)_decodeAndApplyPlaceholder:(const std::string &)hash hashType:(const std::string &)hashType
@@ -190,8 +222,11 @@ UIImage *_Nullable UIImageFromRGBA8888Base64(const std::string &base64, int widt
   [_imageTask cancel];
   _imageTask = nil;
   _placeholderImageView.image = nil;
+  _placeholderImageView.hidden = NO;
   _finalImageView.image = nil;
   _finalImageView.alpha = 0;
+  _shimmerView.hidden = YES;
+  _shimmerView.paused = YES;
 }
 
 - (void)dealloc
