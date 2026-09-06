@@ -50,9 +50,8 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   content: {
-    // alignSelf: 'stretch' (rather than shrink-wrapping) gives this a
-    // definite width, so a percentage-width child (e.g. the loader's
-    // default 90%) has something to resolve against.
+    // 'stretch' gives percentage-width children (e.g. the loader) a
+    // definite width to resolve against.
     alignSelf: 'stretch',
     alignItems: 'center',
     justifyContent: 'center',

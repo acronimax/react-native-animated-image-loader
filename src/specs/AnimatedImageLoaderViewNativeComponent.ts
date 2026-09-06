@@ -24,13 +24,9 @@ export interface NativeProps extends ViewProps {
   placeholderType?: WithDefault<PlaceholderType, 'blurhash'>;
 
   /**
-   * The real encoding of `placeholderHash` ('blurhash' | 'thumbhash').
-   * Needed when `placeholderType` is a visual mode that isn't itself a hash
-   * format (`dominant-color`, `pixelate`) — without it there's no way to
-   * know which decoder to use. Ignored when `placeholderType` already IS a
-   * hash format (`blurhash`/`thumbhash`, which double as the format) or is
-   * `shimmer-shader` (nothing to decode). Defaults to `'blurhash'` if left
-   * unset in that situation.
+   * The real hash format ('blurhash' | 'thumbhash'), needed only when
+   * `placeholderType` is a non-hash visual mode (`dominant-color`,
+   * `pixelate`). Defaults to `'blurhash'` if left unset in that case.
    */
   placeholderHashType?: string;
 

@@ -20,8 +20,8 @@ class AnimatedImageLoaderCore {
       double width,
       double height);
 
-  // Scaffolding only — real dominant-color extraction lands in a later
-  // phase.
+  // Extracts the dominant color from an RGBA8888 pixel buffer via k-means,
+  // as a "#rrggbb" hex string.
   static std::string extractDominantColor(const std::string& base64Bytes);
 };
 

@@ -12,10 +12,8 @@ using facebook::react::animatedimageloader::AnimatedImageLoaderCore;
 
 namespace {
 
-// Placeholders are decoded small and stretched to fill — this is the
-// standard Blurhash/ThumbHash usage pattern (a tiny decode upscaled with
-// bilinear filtering gives the characteristic smooth blur) and also doubles
-// as the dominant-color sample buffer.
+// Decoded small and stretched to fill — the standard Blurhash/ThumbHash
+// look — and also used as the dominant-color sample buffer.
 constexpr int kPlaceholderDecodeSize = 32;
 
 UIImage *_Nullable UIImageFromRGBA8888Base64(const std::string &base64, int width, int height)
@@ -150,11 +148,8 @@ UIImage *_Nullable UIImageFromRGBA8888Base64(const std::string &base64, int widt
   _placeholderImageView.hidden = NO;
 }
 
-// placeholderType doubles as the decode format only for 'blurhash'/
-// 'thumbhash' — visual modes like 'dominant-color'/'pixelate' aren't hash
-// formats at all, so passing them straight through as hashType (as this
-// used to do) makes the decoder silently decode nothing. placeholderHashType
-// is the actual format in that case, falling back to 'blurhash' if unset.
+// The real decode format: placeholderHashType if set, else placeholderType
+// itself when that already is a hash format, else 'blurhash'.
 + (std::string)_resolveHashType:(const AnimatedImageLoaderViewProps &)props
 {
   if (!props.placeholderHashType.empty()) {
@@ -167,14 +162,14 @@ UIImage *_Nullable UIImageFromRGBA8888Base64(const std::string &base64, int widt
   return "blurhash";
 }
 
+// Decodes off the main thread, fires onPaletteExtracted, then applies the
+// placeholder image on the main thread. _eventEmitter is read lazily inside
+// the block (not captured upfront) since it can still be null on first
+// mount, before decoding finishes.
 - (void)_decodeAndApplyPlaceholder:(const std::string &)hash hashType:(const std::string &)hashType
 {
   __weak AnimatedImageLoaderView *weakSelf = self;
 
-  // On the very first mount, Fabric calls updateEventEmitter: *after*
-  // updateProps:oldProps:, so _eventEmitter can still be null here — read it
-  // lazily once decoding has finished (by which time mounting is done)
-  // rather than capturing it upfront.
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     std::string pixels = AnimatedImageLoaderCore::decodePlaceholderHash(
         hash, hashType, kPlaceholderDecodeSize, kPlaceholderDecodeSize);

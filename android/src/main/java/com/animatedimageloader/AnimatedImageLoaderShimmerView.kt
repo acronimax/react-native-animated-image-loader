@@ -10,12 +10,9 @@ import java.nio.FloatBuffer
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
-// GPU-driven shimmer sweep for placeholderType 'shimmer-shader', mirroring
-// the iOS Metal implementation (AnimatedImageLoaderShimmerView.mm): a
-// fullscreen-triangle vertex shader and a fragment shader that animates a
-// diagonal highlight band based on elapsed time, drawn continuously via
-// GLSurfaceView.RENDERMODE_CONTINUOUSLY. Runs entirely on the GPU, not RN
-// Animated.
+// GPU-driven shimmer sweep for placeholderType 'shimmer-shader' — mirrors
+// the iOS Metal implementation via GLSL ES, drawn continuously. Runs
+// entirely on the GPU, not RN Animated.
 class AnimatedImageLoaderShimmerView(context: Context) : GLSurfaceView(context) {
 
   init {
@@ -41,11 +38,8 @@ class AnimatedImageLoaderShimmerView(context: Context) : GLSurfaceView(context) 
     private var timeHandle = 0
     private val startTime = System.nanoTime()
 
-    // Same fullscreen-triangle trick as the Metal shader: one triangle
-    // that overshoots the viewport (-1..3 instead of -1..1) so its
-    // rasterized interior covers the whole screen with no vertex-count
-    // overhead for a quad. GLSL ES 1.00 (GLES 2.0) has no gl_VertexID, so
-    // positions/UVs are supplied via an interleaved vertex buffer instead.
+    // A single triangle overshooting the viewport (-1..3), covering the
+    // whole screen with no vertex-count overhead for a quad.
     private val vertexBuffer: FloatBuffer = ByteBuffer
       .allocateDirect(VERTEX_DATA.size * 4)
       .order(ByteOrder.nativeOrder())

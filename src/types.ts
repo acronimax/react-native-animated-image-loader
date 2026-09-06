@@ -14,24 +14,15 @@ export type AnimatedImgLoaderProps = {
   /** Blurhash or ThumbHash encoded string, decoded natively off the JS thread. */
   placeholderHash?: string;
   /**
-   * Visual placeholder effect to render while loading. Left unset, the
-   * native placeholder stays empty and `skeletonColor`/`skeletonStyles`
-   * show through instead — pass `'blurhash'`, `'thumbhash'`,
-   * `'dominant-color'`, or `'shimmer-shader'` to opt into the GPU-driven
-   * placeholders.
-   *
-   * Has no effect on web — react-native-web has no Fabric/TurboModule
-   * support, so the web build always renders the plain JS skeleton.
+   * Visual placeholder to render while loading. Left unset, the native
+   * placeholder stays empty and `skeletonColor`/`skeletonStyles` show
+   * through instead. Has no effect on web.
    */
   placeholderType?: PlaceholderType;
   /**
-   * The real encoding of `placeholderHash` — only needed when
-   * `placeholderType` is a visual mode that isn't itself a hash format
-   * (`'dominant-color'`, `'pixelate'`); without it there's no way to know
-   * which decoder to use. Ignored when `placeholderType` already is
-   * `'blurhash'`/`'thumbhash'` (those double as the format) or
-   * `'shimmer-shader'` (nothing to decode). Defaults to `'blurhash'` if left
-   * unset in that situation. Has no effect on web.
+   * The real hash format ('blurhash' | 'thumbhash'), needed only when
+   * `placeholderType` is a non-hash visual mode (`'dominant-color'`,
+   * `'pixelate'`). Defaults to `'blurhash'` if left unset in that case.
    */
   placeholderHashType?: 'blurhash' | 'thumbhash';
   /** Native hardware crossfade duration in milliseconds. Has no effect on web. */

@@ -18,10 +18,8 @@ import java.net.HttpURLConnection
 import java.net.URL
 import kotlin.concurrent.thread
 
-// Placeholders are decoded small and stretched to fill — this is the
-// standard Blurhash/ThumbHash usage pattern (a tiny decode upscaled with
-// bilinear filtering gives the characteristic smooth blur) and also doubles
-// as the dominant-color sample buffer.
+// Decoded small and stretched to fill — the standard Blurhash/ThumbHash
+// look — and also used as the dominant-color sample buffer.
 private const val PLACEHOLDER_DECODE_SIZE = 32.0
 
 private fun bitmapFromRGBA8888Base64(base64: String, width: Int, height: Int): Bitmap? {
@@ -136,11 +134,8 @@ class AnimatedImageLoaderViewManager :
     }
   }
 
-  // placeholderType doubles as the decode format only for "blurhash"/
-  // "thumbhash" — visual modes like "dominant-color"/"pixelate" aren't hash
-  // formats at all, so passing them straight through as hashType (as this
-  // used to do) makes the decoder silently decode nothing. placeholderHashType
-  // is the actual format in that case, falling back to "blurhash" if unset.
+  // The real decode format: placeholderHashType if set, else placeholderType
+  // itself when that already is a hash format, else "blurhash".
   private fun resolveHashType(view: AnimatedImageLoaderView): String {
     val explicitHashType = view.placeholderHashType
     if (!explicitHashType.isNullOrEmpty()) {
