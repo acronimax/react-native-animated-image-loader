@@ -56,6 +56,11 @@ npx expo run:ios     # or: npx expo run:android
 
 Or build a dev client with [EAS Build](https://docs.expo.dev/develop/development-builds/create-a-build/) if you're not building locally. See Expo's [Adding custom native code](https://docs.expo.dev/workflow/customizing/) guide for more on why a plain Expo Go install can't satisfy this and what a development build gives you instead.
 
+### Expo SDK & New Architecture requirements
+
+- **Minimum Expo SDK: 54** (matching the `react-native >=0.81.0` peer dependency — Expo SDK 54 is the first SDK release built on React Native 0.81).
+- **The New Architecture must be enabled.** This library only implements the Fabric component and TurboModule code paths — there's no legacy-bridge fallback — so it will not work with `newArchEnabled: false`. This has been Expo's default since SDK 52, so most projects need no changes.
+
 ## Basic Usage
 
 ```js
