@@ -39,6 +39,23 @@ yarn add react-native-animated-image-loader
 import AnimatedImgLoader from 'react-native-animated-image-loader';
 ```
 
+## Using with Expo
+
+Install with `npx expo install`, which picks a version compatible with your Expo SDK:
+
+```sh
+npx expo install react-native-animated-image-loader
+```
+
+This library ships custom native code (a Fabric component and a TurboModule), so it **will not run inside Expo Go** — Expo Go only bundles Expo's own pre-registered native modules and can't load arbitrary third-party native code. You'll need a [development build](https://docs.expo.dev/develop/development-builds/introduction/) instead:
+
+```sh
+npx expo prebuild
+npx expo run:ios     # or: npx expo run:android
+```
+
+Or build a dev client with [EAS Build](https://docs.expo.dev/develop/development-builds/create-a-build/) if you're not building locally. See Expo's [Adding custom native code](https://docs.expo.dev/workflow/customizing/) guide for more on why a plain Expo Go install can't satisfy this and what a development build gives you instead.
+
 ## Basic Usage
 
 ```js
