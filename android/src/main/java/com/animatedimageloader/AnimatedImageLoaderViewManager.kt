@@ -104,10 +104,22 @@ class AnimatedImageLoaderViewManager :
   override fun onAfterUpdateTransaction(view: AnimatedImageLoaderView) {
     super.onAfterUpdateTransaction(view)
 
-    val hash = view.placeholderHash
-    if (!hash.isNullOrEmpty() && hash != view.lastProcessedPlaceholderHash) {
-      view.lastProcessedPlaceholderHash = hash
-      decodeAndApplyPlaceholder(view, hash, view.placeholderType)
+    val typeChanged = view.placeholderType != view.lastProcessedPlaceholderType
+    view.lastProcessedPlaceholderType = view.placeholderType
+
+    if (view.placeholderType == "shimmer-shader") {
+      if (typeChanged) {
+        view.showShimmer()
+      }
+    } else {
+      if (typeChanged) {
+        view.hideShimmer()
+      }
+      val hash = view.placeholderHash
+      if (!hash.isNullOrEmpty() && (hash != view.lastProcessedPlaceholderHash || typeChanged)) {
+        view.lastProcessedPlaceholderHash = hash
+        decodeAndApplyPlaceholder(view, hash, view.placeholderType)
+      }
     }
 
     val uri = view.sourceUri

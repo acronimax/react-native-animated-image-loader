@@ -2,6 +2,7 @@ package com.animatedimageloader
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 
@@ -16,12 +17,15 @@ class AnimatedImageLoaderView : FrameLayout {
   var fadeDurationMs: Double = 300.0
 
   internal var lastProcessedPlaceholderHash: String? = null
+  internal var lastProcessedPlaceholderType: String? = null
   internal var lastProcessedSourceUri: String? = null
 
   lateinit var placeholderImageView: ImageView
     private set
   lateinit var finalImageView: ImageView
     private set
+
+  private var shimmerView: AnimatedImageLoaderShimmerView? = null
 
   constructor(context: Context) : super(context) {
     setUpImageViews(context)
@@ -48,5 +52,21 @@ class AnimatedImageLoaderView : FrameLayout {
 
     addView(placeholderImageView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
     addView(finalImageView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
+  }
+
+  fun showShimmer() {
+    var shimmer = shimmerView
+    if (shimmer == null) {
+      shimmer = AnimatedImageLoaderShimmerView(context)
+      addView(shimmer, 0, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
+      shimmerView = shimmer
+    }
+    shimmer.showShimmer()
+    placeholderImageView.visibility = View.INVISIBLE
+  }
+
+  fun hideShimmer() {
+    shimmerView?.hideShimmer()
+    placeholderImageView.visibility = View.VISIBLE
   }
 }
