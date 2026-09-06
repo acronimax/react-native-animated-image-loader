@@ -2018,7 +2018,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  AnimatedImageLoader: 64a2919cc9a4660be95cbdad933be9ae8ed7d39d
+  AnimatedImageLoader: e5f1d5d277048dc045b726fe1e5b51b89e446ab7
   EXConstants: 18ac927605517285307ea8f7ffe6fe7ca538eb5d
   Expo: 3ccbb4de93972b9a8214b8853ab0c4d4a317e62b
   ExpoAsset: 9e5a7c9c0a9fb83ad5b2bb365141f2bd7f289b66
