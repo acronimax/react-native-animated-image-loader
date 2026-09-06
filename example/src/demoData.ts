@@ -1,11 +1,13 @@
-export const DEMO_IMAGE_URI =
-  'https://images.pexels.com/photos/14133018/pexels-photo-14133018.jpeg';
+export const DEMO_IMAGE_URI = 'https://wallpapercave.com/wp/wp5274503.png';
 
-// Illustrative Blurhash/ThumbHash test vectors — not derived from
-// DEMO_IMAGE_URI, so the decoded placeholder won't visually match the photo
-// it precedes. Good enough to demonstrate the decode + crossfade behavior.
-export const DEMO_BLURHASH = 'LEHV6nWB2yk8pyo0adR*.7kCMdnj';
-export const DEMO_THUMBHASH = 'XAcKNZqAh3dwiIiHeHiIh4BwB/iI';
+// Real Blurhash/ThumbHash for DEMO_IMAGE_URI, so the decoded placeholder
+// actually resembles the photo it precedes (and dominant-color extraction
+// pulls a color that matches it too). Generated with the `blurhash` and
+// `thumbhash` npm packages (encode(), rgbaToThumbHash()) from the image
+// resized to 32x32 / to-fit-100px respectively — regenerate the same way if
+// DEMO_IMAGE_URI changes again.
+export const DEMO_BLURHASH = 'LDHbvZ}b1FI[_}I.60Wnvqr_xT$%';
+export const DEMO_THUMBHASH = '2HYKHAwpN2aIiHBaqHcqb6Xx1g==';
 
 export type PlaceholderExampleSlug =
   | 'blurhash'

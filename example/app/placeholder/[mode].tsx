@@ -58,10 +58,18 @@ export default function PlaceholderExampleScreen() {
             </Text>
           }
         >
+          {/* placeholderType is the decode format here, not "dominant-color"
+              — that value is a native bug (see #86): it gets passed
+              straight through as the decode format, which the shared C++
+              decoder doesn't recognize, so it silently decodes nothing and
+              onPaletteExtracted fires with a black ("#000000") fallback
+              instead of a real extracted color. blurhash is what actually
+              decodes here; onPaletteExtracted fires regardless of
+              placeholderType once decoding succeeds. */}
           <AnimatedImgLoader
             imageUri={DEMO_IMAGE_URI}
             placeholderHash={DEMO_BLURHASH}
-            placeholderType="dominant-color"
+            placeholderType="blurhash"
             onPaletteExtracted={(event) =>
               setPaletteColor(event.nativeEvent.color)
             }
