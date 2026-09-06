@@ -2,10 +2,8 @@ import * as React from 'react';
 import { ScrollView, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+// Internal specs, not the public API — raw native checks only.
 import AnimatedImageLoaderView from '../../../src/specs/AnimatedImageLoaderViewNativeComponent';
-// Relative imports for native-scaffolding verification only (#43) — not part
-// of the library's public API. Kept separate from the customer-facing demo
-// screens so this raw TurboModule/Fabric plumbing doesn't clutter them.
 import NativeAnimatedImageLoader from '../../../src/specs/NativeAnimatedImageLoader';
 import {
   DEMO_BLURHASH,

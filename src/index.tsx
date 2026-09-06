@@ -10,14 +10,10 @@ export type { AnimatedImgLoaderProps, PlaceholderType } from './types';
 
 /**
  * Loads `imageUri`, decoding and crossfading natively via a Fabric
- * component — off the JS thread entirely.
- *
- * With no `placeholderHash`/`placeholderType`, the native placeholder stays
- * empty and a colored `skeletonColor`/`skeletonStyles` backdrop shows
- * through until the image crossfades in, matching the pre-native-rewrite
- * look (minus its animated shimmer bar — pass `placeholderType`
- * (`'shimmer-shader'`, `'blurhash'`, `'thumbhash'`, `'dominant-color'`) to
- * opt into the new GPU-driven placeholders).
+ * component — off the JS thread entirely. Pass `placeholderType` to opt
+ * into a GPU-driven placeholder (blurhash, thumbhash, dominant-color,
+ * shimmer-shader); left unset, `skeletonColor`/`skeletonStyles` show
+ * through instead.
  */
 const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
   imageUri,

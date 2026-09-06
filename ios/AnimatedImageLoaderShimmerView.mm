@@ -46,11 +46,8 @@ typedef struct {
   _startTime = CACurrentMediaTime();
   _commandQueue = [self.device newCommandQueue];
 
-  // The .metal shader is compiled via a CocoaPods resource_bundle (the only
-  // mechanism that actually copies the compiled .metallib into the app,
-  // rather than leaving it in the pod's own intermediate build directory or
-  // copying the raw uncompiled source) — so it lives in its own named
-  // bundle, not the main app bundle.
+  // The compiled .metal shader ships in its own resource bundle (see the
+  // podspec), not the main app bundle.
   NSBundle *mainClassBundle = [NSBundle bundleForClass:[self class]];
   NSURL *shaderBundleURL = [mainClassBundle URLForResource:@"AnimatedImageLoader" withExtension:@"bundle"];
   NSBundle *shaderBundle = shaderBundleURL ? [NSBundle bundleWithURL:shaderBundleURL] : mainClassBundle;

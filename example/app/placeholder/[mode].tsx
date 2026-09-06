@@ -59,11 +59,8 @@ export default function PlaceholderExampleScreen() {
             </Text>
           }
         >
-          {/* DEMO_BLURHASH is blurhash-encoded, which placeholderHashType
-              would default to anyway — set explicitly here just to
-              demonstrate the prop (see #86: placeholderType alone can't
-              tell the native decoder which format placeholderHash is in,
-              since 'dominant-color' is a visual mode, not a hash format). */}
+          {/* placeholderHashType set explicitly here just to demonstrate it
+              — it'd default to 'blurhash' anyway for DEMO_BLURHASH. */}
           <AnimatedImgLoader
             imageUri={DEMO_IMAGE_URI}
             placeholderHash={DEMO_BLURHASH}
