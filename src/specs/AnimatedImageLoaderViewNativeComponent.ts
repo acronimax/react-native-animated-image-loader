@@ -1,9 +1,9 @@
-import { codegenNativeComponent } from 'react-native';
 import type { ViewProps } from 'react-native';
+import { codegenNativeComponent } from 'react-native';
 import type {
+  DirectEventHandler,
   Double,
   WithDefault,
-  DirectEventHandler,
 } from 'react-native/Libraries/Types/CodegenTypes';
 
 export type PlaceholderType =

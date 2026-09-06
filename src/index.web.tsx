@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Animated, StyleSheet, Easing } from 'react-native';
-import { styles } from './styles';
+import { Animated, Easing, StyleSheet, View } from 'react-native';
+
 import { DEFAULT_COLOR, SCREEN_WIDTH } from './constants';
+import { styles } from './styles';
 import type { AnimatedImgLoaderProps } from './types';
 
 export type { AnimatedImgLoaderProps, PlaceholderType } from './types';

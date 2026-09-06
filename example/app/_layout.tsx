@@ -1,10 +1,10 @@
-import * as React from 'react';
 import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
 } from '@react-navigation/native';
 import { Stack } from 'expo-router';
+import * as React from 'react';
 import { useColorScheme } from 'react-native';
 
 export default function RootLayout() {

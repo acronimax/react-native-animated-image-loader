@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { ScrollView, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
 // Internal specs, not the public API — raw native checks only.
-import NativeAnimatedImageLoader from '../../../src/specs/NativeAnimatedImageLoader';
 import AnimatedImageLoaderView from '../../../src/specs/AnimatedImageLoaderViewNativeComponent';
+import NativeAnimatedImageLoader from '../../../src/specs/NativeAnimatedImageLoader';
 import {
   DEMO_BLURHASH,
   DEMO_IMAGE_URI,

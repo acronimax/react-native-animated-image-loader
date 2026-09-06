@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+
+import { DEFAULT_COLOR } from './constants';
 import AnimatedImageLoaderView from './specs/AnimatedImageLoaderViewNativeComponent';
 import { styles } from './styles';
-import { DEFAULT_COLOR } from './constants';
 import type { AnimatedImgLoaderProps } from './types';
 
 export type { AnimatedImgLoaderProps, PlaceholderType } from './types';

@@ -1,6 +1,6 @@
-import * as React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
+import * as React from 'react';
 
 type TabIconProps = { color: string; size: number };
 

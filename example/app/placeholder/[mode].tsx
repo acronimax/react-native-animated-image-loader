@@ -1,7 +1,8 @@
-import * as React from 'react';
 import { useLocalSearchParams } from 'expo-router';
+import * as React from 'react';
 import { StyleSheet, Text } from 'react-native';
 import AnimatedImgLoader from 'react-native-animated-image-loader';
+
 import DemoScreen from '../../src/components/DemoScreen';
 import {
   DEMO_BLURHASH,
