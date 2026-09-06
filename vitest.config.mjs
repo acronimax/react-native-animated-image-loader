@@ -26,5 +26,24 @@ export default defineConfig({
     alias: {
       'react-native': 'react-native-web',
     },
+    // Vite has no built-in notion of RN's platform-extension resolution
+    // (Metro/webpack pick index.web.tsx over index.tsx automatically) — this
+    // mirrors that here so tests exercise the same web entry point real
+    // web/Expo builds do, not the native Fabric-component entry point.
+    extensions: [
+      '.web.mjs',
+      '.web.js',
+      '.web.mts',
+      '.web.ts',
+      '.web.jsx',
+      '.web.tsx',
+      '.mjs',
+      '.js',
+      '.mts',
+      '.ts',
+      '.jsx',
+      '.tsx',
+      '.json',
+    ],
   },
 });

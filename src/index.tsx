@@ -1,125 +1,52 @@
 import React from 'react';
-import {
-  View,
-  Animated,
-  StyleSheet,
-  type ViewProps,
-  Easing,
-} from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import AnimatedImageLoaderView from './specs/AnimatedImageLoaderViewNativeComponent';
 import { styles } from './styles';
-import { DEFAULT_COLOR, SCREEN_WIDTH } from './constants';
+import { DEFAULT_COLOR } from './constants';
+import type { AnimatedImgLoaderProps } from './types';
 
-export type AnimatedImgLoaderProps = {
-  imageUri: string;
-  loaderContainerStyles?: ViewProps['style'];
-  skeletonStyles?: ViewProps['style'];
-  skeletonColor?: string;
-};
+export type { AnimatedImgLoaderProps, PlaceholderType } from './types';
 
 /**
- * A React functional component for loading an animated image.
+ * Loads `imageUri`, decoding and crossfading natively via a Fabric
+ * component — off the JS thread entirely.
  *
- * @component
- * @param {string} imageUri - The URI of the image to be loaded.
- * @param {object} loaderContainerStyles - Additional styles for the loader container.
- * @param {object} skeletonStyles - Additional styles for the skeleton view.
- * @param {string} skeletonColor - The color for the skeleton background.
- * @returns {React.Element} The AnimatedImgLoader component.
+ * With no `placeholderHash`/`placeholderType`, the native placeholder stays
+ * empty and a colored `skeletonColor`/`skeletonStyles` backdrop shows
+ * through until the image crossfades in, matching the pre-native-rewrite
+ * look (minus its animated shimmer bar — pass `placeholderType`
+ * (`'shimmer-shader'`, `'blurhash'`, `'thumbhash'`, `'dominant-color'`) to
+ * opt into the new GPU-driven placeholders).
  */
 const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
   imageUri,
   loaderContainerStyles = styles.loaderContainer,
   skeletonStyles = styles.skeletonContainer,
   skeletonColor = DEFAULT_COLOR.SKELETON_BG,
+  placeholderHash,
+  placeholderType,
+  fadeDuration = 300,
+  onPaletteExtracted,
 }: AnimatedImgLoaderProps): React.ReactElement => {
-  const imageOpacityAV = React.useRef(new Animated.Value(0)).current;
-  const avSkeletonIndicator = React.useRef(new Animated.Value(0)).current;
-  const skeletonAnimationRef = React.useRef<Animated.CompositeAnimation | null>(
-    null
-  );
-  const [, setKeepSkeleton] = React.useState(true);
-
-  const imageOpacityStyle = imageOpacityAV.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 1],
-    extrapolate: 'clamp',
-  });
-
-  const skeletonIndicatorStyle = avSkeletonIndicator.interpolate({
-    inputRange: [0, 1],
-    outputRange: [-SCREEN_WIDTH / 2, SCREEN_WIDTH / 2],
-    extrapolate: 'clamp',
-  });
-
-  React.useEffect(() => {
-    const animation = Animated.loop(
-      Animated.sequence([
-        Animated.timing(avSkeletonIndicator, {
-          toValue: 0,
-          duration: 2500,
-          easing: Easing.out(Easing.ease),
-          useNativeDriver: true,
-        }),
-        Animated.timing(avSkeletonIndicator, {
-          toValue: 1,
-          duration: 2000,
-          easing: Easing.in(Easing.ease),
-          useNativeDriver: true,
-        }),
-      ])
-    );
-    skeletonAnimationRef.current = animation;
-    animation.start();
-
-    return () => {
-      animation.stop();
-    };
-  }, [avSkeletonIndicator]);
-
-  const imageOpacityAnimation = () =>
-    Animated.spring(imageOpacityAV, {
-      useNativeDriver: true,
-      toValue: 1,
-      damping: 90,
-      stiffness: 40,
-    }).start();
-
-  const stopSkeleton = () => {
-    skeletonAnimationRef.current?.stop();
-    setKeepSkeleton(false);
-    imageOpacityAnimation();
-  };
-
   return (
     <View style={loaderContainerStyles}>
-      <Animated.View
+      <View
         style={[
           StyleSheet.absoluteFill,
           skeletonStyles,
           { backgroundColor: skeletonColor },
         ]}
-      >
-        <Animated.View
-          style={[
-            styles.skeletonIndicator,
-            {
-              transform: [{ translateX: skeletonIndicatorStyle }],
-            },
-          ]}
-        />
-      </Animated.View>
-      <Animated.Image
+      />
+      <AnimatedImageLoaderView
         source={{ uri: imageUri }}
-        role={'img'}
-        style={[
-          styles.img,
-          {
-            opacity: imageOpacityStyle,
-          },
-        ]}
-        onLoadEnd={stopSkeleton}
+        placeholderHash={placeholderHash}
+        placeholderType={placeholderType}
+        fadeDuration={fadeDuration}
+        onPaletteExtracted={onPaletteExtracted}
+        style={StyleSheet.absoluteFill}
       />
     </View>
   );
 };
+
 export default AnimatedImgLoader;
