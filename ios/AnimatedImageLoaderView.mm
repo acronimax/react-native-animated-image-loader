@@ -114,10 +114,11 @@ UIImage *_Nullable UIImageFromRGBA8888Base64(const std::string &base64, int widt
     if (typeChanged) {
       [self _hideShimmer];
     }
+    bool hashTypeChanged = newConcreteProps.placeholderHashType != oldConcreteProps.placeholderHashType;
     if (!newConcreteProps.placeholderHash.empty() &&
-        (newConcreteProps.placeholderHash != oldConcreteProps.placeholderHash || typeChanged)) {
+        (newConcreteProps.placeholderHash != oldConcreteProps.placeholderHash || typeChanged || hashTypeChanged)) {
       [self _decodeAndApplyPlaceholder:newConcreteProps.placeholderHash
-                              hashType:toString(newConcreteProps.placeholderType)];
+                              hashType:[AnimatedImageLoaderView _resolveHashType:newConcreteProps]];
     }
   }
 
@@ -147,6 +148,23 @@ UIImage *_Nullable UIImageFromRGBA8888Base64(const std::string &base64, int widt
   _shimmerView.hidden = YES;
   _shimmerView.paused = YES;
   _placeholderImageView.hidden = NO;
+}
+
+// placeholderType doubles as the decode format only for 'blurhash'/
+// 'thumbhash' — visual modes like 'dominant-color'/'pixelate' aren't hash
+// formats at all, so passing them straight through as hashType (as this
+// used to do) makes the decoder silently decode nothing. placeholderHashType
+// is the actual format in that case, falling back to 'blurhash' if unset.
++ (std::string)_resolveHashType:(const AnimatedImageLoaderViewProps &)props
+{
+  if (!props.placeholderHashType.empty()) {
+    return props.placeholderHashType;
+  }
+  std::string placeholderTypeStr = toString(props.placeholderType);
+  if (placeholderTypeStr == "blurhash" || placeholderTypeStr == "thumbhash") {
+    return placeholderTypeStr;
+  }
+  return "blurhash";
 }
 
 - (void)_decodeAndApplyPlaceholder:(const std::string &)hash hashType:(const std::string &)hashType

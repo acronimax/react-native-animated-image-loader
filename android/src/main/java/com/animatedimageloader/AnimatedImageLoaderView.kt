@@ -13,11 +13,13 @@ import android.widget.ImageView
 class AnimatedImageLoaderView : FrameLayout {
   var placeholderHash: String? = null
   var placeholderType: String = "blurhash"
+  var placeholderHashType: String? = null
   var sourceUri: String? = null
   var fadeDurationMs: Double = 300.0
 
   internal var lastProcessedPlaceholderHash: String? = null
   internal var lastProcessedPlaceholderType: String? = null
+  internal var lastProcessedPlaceholderHashType: String? = null
   internal var lastProcessedSourceUri: String? = null
 
   lateinit var placeholderImageView: ImageView

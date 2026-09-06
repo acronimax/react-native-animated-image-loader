@@ -24,6 +24,16 @@ export type AnimatedImgLoaderProps = {
    * support, so the web build always renders the plain JS skeleton.
    */
   placeholderType?: PlaceholderType;
+  /**
+   * The real encoding of `placeholderHash` — only needed when
+   * `placeholderType` is a visual mode that isn't itself a hash format
+   * (`'dominant-color'`, `'pixelate'`); without it there's no way to know
+   * which decoder to use. Ignored when `placeholderType` already is
+   * `'blurhash'`/`'thumbhash'` (those double as the format) or
+   * `'shimmer-shader'` (nothing to decode). Defaults to `'blurhash'` if left
+   * unset in that situation. Has no effect on web.
+   */
+  placeholderHashType?: 'blurhash' | 'thumbhash';
   /** Native hardware crossfade duration in milliseconds. Has no effect on web. */
   fadeDuration?: number;
   /** Fires once the native side extracts a dominant/ambient color. Has no effect on web. */
