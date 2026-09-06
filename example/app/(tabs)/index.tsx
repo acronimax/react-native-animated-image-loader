@@ -1,5 +1,6 @@
 import * as React from 'react';
 import AnimatedImgLoader from 'react-native-animated-image-loader';
+
 import DemoScreen from '../../src/components/DemoScreen';
 import { DEMO_IMAGE_URI } from '../../src/demoData';
 

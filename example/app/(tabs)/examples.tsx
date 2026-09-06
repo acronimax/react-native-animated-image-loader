@@ -1,7 +1,8 @@
-import * as React from 'react';
 import { Link } from 'expo-router';
+import * as React from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
 import { PLACEHOLDER_EXAMPLES } from '../../src/demoData';
 
 /** Menu of every placeholder mode + customization example, each on its own screen. */

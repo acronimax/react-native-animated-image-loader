@@ -1,10 +1,11 @@
 import type { ViewProps } from 'react-native';
+
 import type {
-  PlaceholderType,
   PaletteExtractedEvent,
+  PlaceholderType,
 } from './specs/AnimatedImageLoaderViewNativeComponent';
 
-export type { PlaceholderType, PaletteExtractedEvent };
+export type { PaletteExtractedEvent, PlaceholderType };
 
 export type AnimatedImgLoaderProps = {
   imageUri: string;
