@@ -7,11 +7,10 @@ import type { AnimatedImgLoaderProps } from './types';
 export type { AnimatedImgLoaderProps, PlaceholderType } from './types';
 
 /**
- * Web fallback: react-native-web has no Fabric/TurboModule support, so this
- * keeps the original pure-JS Animated implementation used before the native
- * rewrite. The new native-only props (placeholderHash, placeholderType,
- * fadeDuration, onPaletteExtracted) are accepted for type compatibility with
- * the native entry point (index.tsx) but have no effect here.
+ * Web fallback — react-native-web has no Fabric/TurboModule support, so
+ * this keeps the original pure-JS Animated implementation. Native-only
+ * props are accepted for type compatibility with index.tsx but do nothing
+ * here.
  */
 const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
   imageUri,

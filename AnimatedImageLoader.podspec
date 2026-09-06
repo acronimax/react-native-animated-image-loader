@@ -19,12 +19,8 @@ Pod::Spec.new do |s|
     "HEADER_SEARCH_PATHS" => "\"$(PODS_TARGET_SRCROOT)/cpp\""
   }
   s.frameworks = "Metal", "MetalKit"
-  # .metal files must go through a CocoaPods resource_bundle — as a plain
-  # source_file the shader compiles but is left behind in the pod's own
-  # intermediate build directory (never reaches the app bundle); as a plain
-  # `resources` entry CocoaPods just copies the raw .metal text uncompiled.
-  # resource_bundles is the one path that actually invokes the Metal
-  # compiler and copies the resulting .metallib into the app.
+  # Only resource_bundles actually compiles .metal and ships the .metallib
+  # in the app (source_files/resources don't).
   s.resource_bundles = {
     "AnimatedImageLoader" => ["ios/**/*.metal"]
   }
