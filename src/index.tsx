@@ -25,6 +25,7 @@ const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
   skeletonColor = DEFAULT_COLOR.SKELETON_BG,
   placeholderHash,
   placeholderType,
+  placeholderHashType,
   fadeDuration = 300,
   onPaletteExtracted,
 }: AnimatedImgLoaderProps): React.ReactElement => {
@@ -41,6 +42,7 @@ const AnimatedImgLoader: React.FC<AnimatedImgLoaderProps> = ({
         source={{ uri: imageUri }}
         placeholderHash={placeholderHash}
         placeholderType={placeholderType}
+        placeholderHashType={placeholderHashType}
         fadeDuration={fadeDuration}
         onPaletteExtracted={onPaletteExtracted}
         style={StyleSheet.absoluteFill}

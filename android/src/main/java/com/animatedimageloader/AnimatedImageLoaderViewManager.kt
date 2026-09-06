@@ -93,6 +93,11 @@ class AnimatedImageLoaderViewManager :
     view?.placeholderType = value ?: "blurhash"
   }
 
+  @ReactProp(name = "placeholderHashType")
+  override fun setPlaceholderHashType(view: AnimatedImageLoaderView?, value: String?) {
+    view?.placeholderHashType = value
+  }
+
   @ReactProp(name = "fadeDuration")
   override fun setFadeDuration(view: AnimatedImageLoaderView?, value: Double) {
     view?.fadeDurationMs = value
@@ -106,6 +111,8 @@ class AnimatedImageLoaderViewManager :
 
     val typeChanged = view.placeholderType != view.lastProcessedPlaceholderType
     view.lastProcessedPlaceholderType = view.placeholderType
+    val hashTypeChanged = view.placeholderHashType != view.lastProcessedPlaceholderHashType
+    view.lastProcessedPlaceholderHashType = view.placeholderHashType
 
     if (view.placeholderType == "shimmer-shader") {
       if (typeChanged) {
@@ -116,9 +123,9 @@ class AnimatedImageLoaderViewManager :
         view.hideShimmer()
       }
       val hash = view.placeholderHash
-      if (!hash.isNullOrEmpty() && (hash != view.lastProcessedPlaceholderHash || typeChanged)) {
+      if (!hash.isNullOrEmpty() && (hash != view.lastProcessedPlaceholderHash || typeChanged || hashTypeChanged)) {
         view.lastProcessedPlaceholderHash = hash
-        decodeAndApplyPlaceholder(view, hash, view.placeholderType)
+        decodeAndApplyPlaceholder(view, hash, resolveHashType(view))
       }
     }
 
@@ -126,6 +133,23 @@ class AnimatedImageLoaderViewManager :
     if (!uri.isNullOrEmpty() && uri != view.lastProcessedSourceUri) {
       view.lastProcessedSourceUri = uri
       loadFinalImage(view, uri, view.fadeDurationMs)
+    }
+  }
+
+  // placeholderType doubles as the decode format only for "blurhash"/
+  // "thumbhash" — visual modes like "dominant-color"/"pixelate" aren't hash
+  // formats at all, so passing them straight through as hashType (as this
+  // used to do) makes the decoder silently decode nothing. placeholderHashType
+  // is the actual format in that case, falling back to "blurhash" if unset.
+  private fun resolveHashType(view: AnimatedImageLoaderView): String {
+    val explicitHashType = view.placeholderHashType
+    if (!explicitHashType.isNullOrEmpty()) {
+      return explicitHashType
+    }
+    return if (view.placeholderType == "blurhash" || view.placeholderType == "thumbhash") {
+      view.placeholderType
+    } else {
+      "blurhash"
     }
   }
 
