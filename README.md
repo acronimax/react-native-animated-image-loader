@@ -6,6 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 [![format prettier](https://img.shields.io/badge/format-prettier-ff69b4.svg?style=for-the-badge)](https://prettier.io)
 [![lint-eslint](https://img.shields.io/badge/lint-eslint-4b32c3.svg?style=for-the-badge)](https://eslint.org/)
+[![CodeQL](https://img.shields.io/github/actions/workflow/status/acronimax/react-native-animated-image-loader/codeql.yml?branch=main&label=CodeQL&style=for-the-badge&logo=github)](https://github.com/acronimax/react-native-animated-image-loader/actions/workflows/codeql.yml)
 
 <table>
   <tr>
