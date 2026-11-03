@@ -88,7 +88,7 @@
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-simple-import-sort": "^14.0.0",
     "eslint-plugin-unused-imports": "^4.4.1",
-    "happy-dom": "^20.0.10",
+    "happy-dom": "^21.0.4",
     "hermes-eslint": "^0.37.0",
     "jsdom": "^27.2.0",
     "prettier": "^3.4.2",
