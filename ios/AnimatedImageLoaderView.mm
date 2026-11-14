@@ -72,11 +72,16 @@ UIImage *_Nullable UIImageFromRGBA8888Base64(const std::string &base64, int widt
   return concreteComponentDescriptorProvider<AnimatedImageLoaderViewComponentDescriptor>();
 }
 
++ (std::shared_ptr<const AnimatedImageLoaderViewProps> const &)_defaultProps
+{
+  static const auto defaultProps = std::make_shared<const AnimatedImageLoaderViewProps>();
+  return defaultProps;
+}
+
 - (instancetype)initWithFrame:(CGRect)frame
 {
   if (self = [super initWithFrame:frame]) {
-    static const auto defaultProps = std::make_shared<const AnimatedImageLoaderViewProps>();
-    _props = defaultProps;
+    _props = [AnimatedImageLoaderView _defaultProps];
 
     _placeholderImageView = [[UIImageView alloc] initWithFrame:self.bounds];
     _placeholderImageView.contentMode = UIViewContentModeScaleAspectFill;
@@ -231,6 +236,11 @@ UIImage *_Nullable UIImageFromRGBA8888Base64(const std::string &base64, int widt
 - (void)prepareForRecycle
 {
   [super prepareForRecycle];
+
+  // updateProps diffs against _props, which React Native doesn't reset on
+  // recycle. Without this, a reused view with the same uri/hash as its last
+  // use skips the placeholder decode and image load.
+  _props = [AnimatedImageLoaderView _defaultProps];
 
   [_imageTask cancel];
   _imageTask = nil;
