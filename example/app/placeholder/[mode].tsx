@@ -12,10 +12,24 @@ import {
   type PlaceholderExampleSlug,
 } from '../../src/demoData';
 
+// Demo-only: hold the real image back so the placeholder is visible long
+// enough to see the transition. An empty uri makes the native side skip loading.
+const IMAGE_LOAD_DELAY_MS = 1500;
+
+function useDelayedUri(uri: string, delayMs: number): string {
+  const [delayedUri, setDelayedUri] = React.useState('');
+  React.useEffect(() => {
+    const timer = setTimeout(() => setDelayedUri(uri), delayMs);
+    return () => clearTimeout(timer);
+  }, [uri, delayMs]);
+  return delayedUri;
+}
+
 export default function PlaceholderExampleScreen() {
   const { mode } = useLocalSearchParams<{ mode: PlaceholderExampleSlug }>();
   const example = PLACEHOLDER_EXAMPLES.find((item) => item.slug === mode);
   const [paletteColor, setPaletteColor] = React.useState<string | null>(null);
+  const imageUri = useDelayedUri(DEMO_IMAGE_URI, IMAGE_LOAD_DELAY_MS);
 
   if (!example) {
     return (
@@ -30,7 +44,7 @@ export default function PlaceholderExampleScreen() {
       return (
         <DemoScreen title={example.title} description={example.description}>
           <AnimatedImgLoader
-            imageUri={DEMO_IMAGE_URI}
+            imageUri={imageUri}
             placeholderHash={DEMO_BLURHASH}
             placeholderType="blurhash"
           />
@@ -40,7 +54,7 @@ export default function PlaceholderExampleScreen() {
       return (
         <DemoScreen title={example.title} description={example.description}>
           <AnimatedImgLoader
-            imageUri={DEMO_IMAGE_URI}
+            imageUri={imageUri}
             placeholderHash={DEMO_THUMBHASH}
             placeholderType="thumbhash"
           />
@@ -62,7 +76,7 @@ export default function PlaceholderExampleScreen() {
           {/* placeholderHashType set explicitly here just to demonstrate it
               — it'd default to 'blurhash' anyway for DEMO_BLURHASH. */}
           <AnimatedImgLoader
-            imageUri={DEMO_IMAGE_URI}
+            imageUri={imageUri}
             placeholderHash={DEMO_BLURHASH}
             placeholderType="dominant-color"
             placeholderHashType="blurhash"
@@ -76,7 +90,7 @@ export default function PlaceholderExampleScreen() {
       return (
         <DemoScreen title={example.title} description={example.description}>
           <AnimatedImgLoader
-            imageUri={DEMO_IMAGE_URI}
+            imageUri={imageUri}
             placeholderType="shimmer-shader"
           />
         </DemoScreen>
@@ -85,7 +99,7 @@ export default function PlaceholderExampleScreen() {
       return (
         <DemoScreen title={example.title} description={example.description}>
           <AnimatedImgLoader
-            imageUri={DEMO_IMAGE_URI}
+            imageUri={imageUri}
             skeletonColor="#FF6B6B"
             skeletonStyles={styles.customSkeleton}
           />
