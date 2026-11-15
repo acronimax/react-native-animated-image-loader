@@ -3,9 +3,30 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
+      - 'LICENSE'
+      - '**/*.gif'
+      - '**/*.png'
+      - '**/*.jpg'
+      - '**/*.svg'
   pull_request:
     branches:
       - main
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
+      - 'LICENSE'
+      - '**/*.gif'
+      - '**/*.png'
+      - '**/*.jpg'
+      - '**/*.svg'
+
+# A newer push to the same PR/branch cancels the older, now-stale run.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read

@@ -3,11 +3,32 @@ name: "CodeQL Advanced"
 on:
   push:
     branches: [ "main" ]
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
+      - 'LICENSE'
+      - '**/*.gif'
+      - '**/*.png'
+      - '**/*.jpg'
+      - '**/*.svg'
   pull_request:
     branches: [ "main" ]
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
+      - 'LICENSE'
+      - '**/*.gif'
+      - '**/*.png'
+      - '**/*.jpg'
+      - '**/*.svg'
   schedule:
     - cron: '29 15 * * 0'
   workflow_dispatch: # Enables manual re-run button in GitHub Actions UI
+
+# A newer push to the same PR/branch cancels the older, now-stale run.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   analyze:
