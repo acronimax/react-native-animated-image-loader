@@ -46,6 +46,7 @@ That's it: a skeleton background shows while the image loads, then crossfades to
 - [Requirements](#requirements)
 - [Placeholder modes](#placeholder-modes)
   - [Default skeleton](#default-skeleton)
+  - [Custom skeleton](#custom-skeleton)
   - [Blurhash](#blurhash)
   - [ThumbHash](#thumbhash)
   - [Dominant color](#dominant-color)
@@ -53,7 +54,6 @@ That's it: a skeleton background shows while the image loads, then crossfades to
 - [Props reference](#props-reference)
 - [Advanced customization](#advanced-customization)
   - [Custom sizing and shape](#custom-sizing-and-shape)
-  - [Custom skeleton](#custom-skeleton)
   - [Tuning the crossfade](#tuning-the-crossfade)
   - [Reacting to the extracted color](#reacting-to-the-extracted-color)
 - [Using with Expo](#using-with-expo)
@@ -74,6 +74,7 @@ Choose a mode with the `placeholderType` prop. Modes that decode a hash also nee
 | Mode                                  | `placeholderType`  | Needs `placeholderHash` | Best for                                       |
 |---------------------------------------|--------------------|:-----------------------:|------------------------------------------------|
 | [Default skeleton](#default-skeleton) | *(unset)*          |           No            | Zero setup                                     |
+| [Custom skeleton](#custom-skeleton)   | *(unset)*          |           No            | Your own color and shape, no hash needed       |
 | [Blurhash](#blurhash)                 | `'blurhash'`       |           Yes           | A compact blurred preview                      |
 | [ThumbHash](#thumbhash)               | `'thumbhash'`      |           Yes           | A blurred preview that keeps aspect and alpha  |
 | [Dominant color](#dominant-color)     | `'dominant-color'` |           Yes           | A flat ambient color, plus the color as an event |
@@ -86,6 +87,23 @@ No hash and no `placeholderType`: the `skeletonColor` and `skeletonStyles` props
 ```tsx
 <AnimatedImgLoader imageUri={uri} />
 ```
+
+### Custom skeleton
+
+Still no hash and no `placeholderType`, but with your own look: `skeletonColor` sets the background color and `skeletonStyles` styles the layer (here, rounded corners).
+
+```tsx
+<AnimatedImgLoader
+  imageUri={uri}
+  skeletonColor="#FF6B6B"
+  skeletonStyles={{ borderRadius: 24 }}
+/>
+```
+
+<p align="center">
+  <img src="docs/media/android-custom-skeleton.gif" width="270" alt="Custom coral skeleton crossfading to the loaded image on Android" /><br />
+  <sub>Android</sub>
+</p>
 
 ### Blurhash
 
@@ -189,21 +207,6 @@ The `AnimatedImgLoaderProps` and `PlaceholderType` types are exported from the p
   }}
 />
 ```
-
-### Custom skeleton
-
-```tsx
-<AnimatedImgLoader
-  imageUri={uri}
-  skeletonColor="#FF6B6B"
-  skeletonStyles={{ borderRadius: 24 }}
-/>
-```
-
-<p align="center">
-  <img src="docs/media/android-custom-skeleton.gif" width="270" alt="Custom coral skeleton crossfading to the loaded image on Android" /><br />
-  <sub>Android</sub>
-</p>
 
 ### Tuning the crossfade
 
