@@ -99,6 +99,11 @@ Pass a [Blurhash](https://blurha.sh) string. It is decoded natively, off the JS 
 />
 ```
 
+<p align="center">
+  <img src="docs/media/android-blurhash.gif" width="270" alt="Blurhash placeholder crossfading to the loaded image on Android" /><br />
+  <sub>Android</sub>
+</p>
+
 ### ThumbHash
 
 Pass a [ThumbHash](https://evanw.github.io/thumbhash/) string (base64).
@@ -110,6 +115,11 @@ Pass a [ThumbHash](https://evanw.github.io/thumbhash/) string (base64).
   placeholderHash="2HYKHAwpN2aIiHBaqHcqb6Xx1g=="
 />
 ```
+
+<p align="center">
+  <img src="docs/media/android-thumbhash.gif" width="270" alt="ThumbHash placeholder crossfading to the loaded image on Android" /><br />
+  <sub>Android</sub>
+</p>
 
 ### Dominant color
 
@@ -126,6 +136,11 @@ Because `'dominant-color'` isn't itself a hash format, set `placeholderHashType`
 />
 ```
 
+<p align="center">
+  <img src="docs/media/android-dominant-color.gif" width="270" alt="Dominant color placeholder crossfading to the loaded image on Android, with the extracted color shown below" /><br />
+  <sub>Android</sub>
+</p>
+
 ### Shimmer shader
 
 A shimmer sweep rendered on the GPU (Metal on iOS, OpenGL ES on Android), with no React Native `Animated` loop. It needs no hash.
@@ -133,6 +148,11 @@ A shimmer sweep rendered on the GPU (Metal on iOS, OpenGL ES on Android), with n
 ```tsx
 <AnimatedImgLoader imageUri={uri} placeholderType="shimmer-shader" />
 ```
+
+<p align="center">
+  <img src="docs/media/android-shimmer-shader.gif" width="270" alt="GPU shimmer shader placeholder crossfading to the loaded image on Android" /><br />
+  <sub>Android</sub>
+</p>
 
 > Generate hashes ahead of time (on your server or at upload) with the [`blurhash`](https://www.npmjs.com/package/blurhash) and [`thumbhash`](https://www.npmjs.com/package/thumbhash) packages, and ship them alongside each image URL.
 
@@ -179,6 +199,11 @@ The `AnimatedImgLoaderProps` and `PlaceholderType` types are exported from the p
   skeletonStyles={{ borderRadius: 24 }}
 />
 ```
+
+<p align="center">
+  <img src="docs/media/android-custom-skeleton.gif" width="270" alt="Custom coral skeleton crossfading to the loaded image on Android" /><br />
+  <sub>Android</sub>
+</p>
 
 ### Tuning the crossfade
 
