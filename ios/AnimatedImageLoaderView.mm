@@ -175,9 +175,15 @@ UIImage *_Nullable UIImageFromRGBA8888Base64(const std::string &base64, int widt
 {
   __weak AnimatedImageLoaderView *weakSelf = self;
 
+  // Copy by value: the block runs later on another queue, and `hashType` is
+  // a temporary that is already destroyed by then (a captured reference
+  // would dangle and decode with an empty format).
+  const std::string hashCopy = hash;
+  const std::string hashTypeCopy = hashType;
+
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     std::string pixels = AnimatedImageLoaderCore::decodePlaceholderHash(
-        hash, hashType, kPlaceholderDecodeSize, kPlaceholderDecodeSize);
+        hashCopy, hashTypeCopy, kPlaceholderDecodeSize, kPlaceholderDecodeSize);
     std::string color = AnimatedImageLoaderCore::extractDominantColor(pixels);
     UIImage *image = UIImageFromRGBA8888Base64(pixels, kPlaceholderDecodeSize, kPlaceholderDecodeSize);
 

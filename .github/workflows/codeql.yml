@@ -47,6 +47,10 @@ jobs:
         include:
           - language: javascript-typescript
             build-mode: none
+          # Scans the workflow files themselves (injection, unpinned or
+          # over-privileged actions). Needs no build.
+          - language: actions
+            build-mode: none
 
     steps:
       - name: Checkout repository
