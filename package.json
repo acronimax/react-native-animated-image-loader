@@ -1,7 +1,7 @@
 {
   "name": "react-native-animated-image-loader",
   "version": "0.3.0",
-  "description": "Simple Elegant Animated Image Loader",
+  "description": "Native image loader for React Native with Blurhash, ThumbHash, dominant color and GPU shimmer placeholders, plus a smooth crossfade.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/src/index.d.ts",
@@ -44,7 +44,14 @@
   "keywords": [
     "react-native",
     "ios",
-    "android"
+    "android",
+    "image-loader",
+    "blurhash",
+    "thumbhash",
+    "shimmer",
+    "placeholder",
+    "fabric",
+    "expo"
   ],
   "repository": {
     "type": "git",
