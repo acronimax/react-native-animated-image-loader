@@ -14,9 +14,17 @@ const renderDebugIcon = ({ color, size }: TabIconProps) => (
   <Ionicons name="bug" color={color} size={size} />
 );
 
+const renderBenchIcon = ({ color, size }: TabIconProps) => (
+  <Ionicons name="speedometer" color={color} size={size} />
+);
+
 export default function TabLayout() {
   return (
-    <Tabs>
+    <Tabs
+      initialRouteName={
+        process.env.EXPO_PUBLIC_BENCH_AUTORUN === '1' ? 'benchmark' : undefined
+      }
+    >
       <Tabs.Screen
         name="index"
         options={{ title: 'Home', tabBarIcon: renderHomeIcon }}
@@ -24,6 +32,10 @@ export default function TabLayout() {
       <Tabs.Screen
         name="examples"
         options={{ title: 'Examples', tabBarIcon: renderExamplesIcon }}
+      />
+      <Tabs.Screen
+        name="benchmark"
+        options={{ title: 'Bench', tabBarIcon: renderBenchIcon }}
       />
       <Tabs.Screen
         name="debug"

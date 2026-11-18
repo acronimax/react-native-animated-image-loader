@@ -182,6 +182,8 @@ A shimmer sweep rendered on the GPU (Metal on iOS, OpenGL ES on Android), with n
   </tr>
 </table>
 
+> The shimmer runs natively, but its cost grows with each instance on screen. See the [benchmarks](docs/benchmarks.md) before putting many in one list.
+
 > Generate hashes ahead of time (on your server or at upload) with the [`blurhash`](https://www.npmjs.com/package/blurhash) and [`thumbhash`](https://www.npmjs.com/package/thumbhash) packages, and ship them alongside each image URL.
 
 ## Props reference
