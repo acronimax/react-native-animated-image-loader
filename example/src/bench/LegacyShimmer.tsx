@@ -50,9 +50,7 @@ export default function LegacyShimmer({
   }, [indicator]);
 
   return (
-    <Animated.View
-      style={[style, { backgroundColor: 'rgba(0,0,0,.2)', overflow: 'hidden' }]}
-    >
+    <Animated.View style={[style, styles.container]}>
       <Animated.View
         style={[styles.indicator, { transform: [{ translateX }] }]}
       />
@@ -61,6 +59,10 @@ export default function LegacyShimmer({
 }
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: 'rgba(0,0,0,.2)',
+    overflow: 'hidden',
+  },
   indicator: {
     opacity: 0.5,
     height: '100%',
